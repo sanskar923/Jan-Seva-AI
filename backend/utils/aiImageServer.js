@@ -6,46 +6,11 @@ const ROAD_LABEL_HINTS = [
   "road",
   "highway",
   "traffic",
-  "parking",
-  "jeep",
-  "truck",
-  "bus",
-  "van",
-  "pickup",
-  "taxi",
-  "cab",
-  "vehicle",
-  "wheel",
-  "tire",
-  "manhole",
-  "drain",
-  "gravel",
-  "pavement",
   "asphalt",
-  "sign",
-  "meter",
-  "bridge",
-  "tractor",
-  "forklift",
-  "plow",
-  "dirt",
-  "grate",
+  "pavement",
+  "manhole",
   "guardrail",
-  "lakeside",
-  "valley",
-  "cliff",
-  "dam",
-  "promontory",
-  "cup",
-  "plate",
-  "tray",
-  "bowl",
-  "tile",
-  "concrete",
-  "cement",
-  "floor",
-  "crack",
-  "hole",
+  "viaduct",
   "pothole"
 ];
 
@@ -55,61 +20,41 @@ function normalizeImagenetCategory(label) {
     l.includes("garbage") ||
     l.includes("trash") ||
     l.includes("ashcan") ||
-    l.includes("plastic bag") ||
-    l.includes("toilet")
+    l.includes("wastebasket") ||
+    l.includes("dumpster") ||
+    l.includes("landfill")
   ) {
     return "Sanitation";
   }
   if (
     l.includes("street") ||
-    l.includes("traffic") ||
     l.includes("highway") ||
-    l.includes("parking") ||
-    l.includes("tow truck") ||
-    l.includes("snowplow") ||
-    l.includes("jeep") ||
-    l.includes("minivan") ||
-    l.includes("trailer") ||
-    l.includes("pickup") ||
-    l.includes("school bus") ||
-    l.includes("fire engine") ||
-    l.includes("gravel") ||
-    l.includes("manhole") ||
-    l.includes("street sign") ||
-    l.includes("traffic light") ||
     l.includes("pavement") ||
-    l.includes("asphalt")
+    l.includes("asphalt") ||
+    l.includes("manhole") ||
+    l.includes("pothole")
   ) {
     return "Road";
   }
   if (
-    l.includes("water") ||
+    l.includes("water spout") ||
     l.includes("fountain") ||
-    l.includes("swimming") ||
-    l.includes("snorkel") ||
-    l.includes("paddle") ||
-    l.includes("canoe") ||
-    l.includes("tub") ||
-    l.includes("shower")
+    l.includes("fire hydrant") ||
+    l.includes("drain") ||
+    l.includes("sewer") ||
+    l.includes("culvert") ||
+    l.includes("gutter")
   ) {
     return "Water";
   }
   if (
-    l.includes("spotlight") ||
-    l.includes("lampshade") ||
-    l.includes("radio") ||
-    l.includes("television") ||
-    l.includes("monitor") ||
-    l.includes("screen") ||
-    l.includes("laptop") ||
-    l.includes("desktop") ||
-    l.includes("microwave") ||
-    l.includes("iron")
+    l.includes("utility pole") ||
+    l.includes("power line") ||
+    l.includes("transmission tower") ||
+    l.includes("transformer") ||
+    l.includes("streetlamp")
   ) {
     return "Electricity";
-  }
-  if (l.includes("envelope") || l.includes("wallet") || l.includes("menu") || l.includes("packet")) {
-    return "Billing";
   }
   return "General";
 }
@@ -199,37 +144,31 @@ export function mergeImageSignals({ fileMeta, caption, clientPrediction, serverP
   const candidates = [];
 
   if (clientPrediction?.category) {
+    const conf = Number(clientPrediction.confidence);
     candidates.push({
-      category: clientPrediction.category,
-      confidence: Number(clientPrediction.confidence) || 0.5,
+      category: conf < 0.60 ? "Needs Manual Officer Review" : clientPrediction.category,
+      confidence: conf >= 0.60 ? conf : (conf || 0.52),
       urgency: clientPrediction.urgency || urgencyFromCategory(clientPrediction.category),
       topLabels: clientPrediction.topLabels || [],
-      aiSource: clientPrediction.aiSource || "mobilenet"
+      aiSource: clientPrediction.aiSource || "client-vision-model"
     });
   }
 
   if (serverPrediction?.category) {
+    const conf = Number(serverPrediction.confidence);
     candidates.push({
-      category: serverPrediction.category,
-      confidence: Number(serverPrediction.confidence) || 0.55,
+      category: conf < 0.60 ? "Needs Manual Officer Review" : serverPrediction.category,
+      confidence: conf >= 0.60 ? conf : (conf || 0.54),
       urgency: serverPrediction.urgency || urgencyFromCategory(serverPrediction.category),
       topLabels: serverPrediction.topLabels || [],
       aiSource: serverPrediction.aiSource || "huggingface-image"
     });
   }
 
-  candidates.push({
-    category: filenameGuess.category,
-    confidence: 0.34,
-    urgency: filenameGuess.urgency,
-    topLabels: [],
-    aiSource: "filename"
-  });
-
-  if (captionGuess) {
+  if (captionGuess && captionGuess.category !== "General") {
     candidates.push({
       category: captionGuess.category,
-      confidence: 0.48,
+      confidence: 0.89,
       urgency: captionGuess.urgency,
       topLabels: [],
       aiSource: "caption-keywords"
@@ -237,27 +176,42 @@ export function mergeImageSignals({ fileMeta, caption, clientPrediction, serverP
   }
 
   const labelRoadHint = roadHintScoreFromTopLabels(clientPrediction?.topLabels || serverPrediction?.topLabels);
-  if (labelRoadHint >= 0.16) {
+  if (labelRoadHint >= 0.25) {
     candidates.push({
       category: "Road",
-      confidence: Math.min(0.78, 0.42 + labelRoadHint * 0.45),
+      confidence: Math.min(0.94, 0.88 + labelRoadHint * 0.06),
       urgency: urgencyFromCategory("Road"),
       topLabels: clientPrediction?.topLabels || serverPrediction?.topLabels || [],
       aiSource: "image-label-hint"
     });
   }
 
+  if (!candidates.length) {
+    candidates.push({
+      category: "Needs Manual Officer Review",
+      confidence: 0.52,
+      urgency: "Medium",
+      topLabels: [],
+      aiSource: "manual-review-fallback"
+    });
+  }
+
   candidates.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
   const best = candidates[0];
 
+  const assignedCategory =
+    best.confidence < 0.60 || best.category === "General"
+      ? "Needs Manual Officer Review"
+      : best.category;
+
   const summary =
     captionText ||
-    `Image complaint classified as ${best.category} (${best.aiSource}).`;
+    `Image complaint classified as ${assignedCategory} (${best.aiSource}).`;
 
   return {
-    category: best.category,
+    category: assignedCategory,
     urgency: best.urgency,
-    confidence: Math.min(0.97, Math.max(0.2, best.confidence)),
+    confidence: Math.min(0.97, Math.max(0.42, best.confidence)),
     summary: summary.slice(0, 280),
     aiSource: best.aiSource,
     topLabels: best.topLabels || [],

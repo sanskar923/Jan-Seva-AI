@@ -1,42 +1,62 @@
-# Jan Seva AI (जन सेवा AI) 🏛️
-### Smart India Hackathon 2026 — AI Innovation for Public Services & Citizen-Centric Governance
+# Jan Seva AI (Samasyasetu) — Autonomous Civic Redressal & Dual-Track Infrastructure Platform 🏛️
 
-[![SIH 2026](https://img.shields.io/badge/SIH-2026_Hackathon-orange.svg?style=for-the-badge&logo=gov.in)](https://sih.gov.in)
+[![Smart India Hackathon 2026](https://img.shields.io/badge/SIH-2026_Innovation-orange.svg?style=for-the-badge&logo=gov.in)](https://sih.gov.in)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![React](https://img.shields.io/badge/React-18.x-61DAFB.svg?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![React 18](https://img.shields.io/badge/React-18.x-61DAFB.svg?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Leaflet](https://img.shields.io/badge/Leaflet-1.9.4-199900.svg?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com/)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Leaflet.js](https://img.shields.io/badge/Leaflet-1.9.4-199900.svg?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com/)
+[![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-4.22-FF6F00.svg?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/js)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 ---
 
-## 📌 Executive Summary
+## 📌 Executive Summary & Value Proposition
 
-**Jan Seva AI** is an intelligent, multimodal civic grievance intake, triage, and resolution platform developed for **Smart India Hackathon 2026**. 
+**Jan Seva AI (Samasyasetu)** is a multimodal, proactive civic operating system and dual-track infrastructure management platform developed for **Smart India Hackathon 2026**.
 
-Conventional municipal redressal portals act merely as passive digital post offices where grievances get mired in red tape, ambiguous department handoffs, and duplicate paperwork. **Jan Seva AI** transforms this paradigm into an automated, proactive civic operating system:
-* **Citizen Accessibility First:** Citizens file complaints via vernacular speech (Hindi/Hinglish/Regional), live camera snapshots with automatic EXIF GPS extraction, or structured text.
-* **Sub-2s AI NLP Triage:** Deep keyword rules and scikit-learn ML models classify issues across civic departments (PWD, DISCOM, Jal Board, Sanitation) and score emergency urgency.
-* **100m Geo-Spatial Deduplication:** Clustering algorithms detect and bundle adjacent complaints within 100 meters, eliminating duplicate department dispatch.
-* **Dual-Track Governance Architecture (SamasyaSetu):** Smart routing differentiates routine municipal repairs (Track A: 24h–72h SLA) from chronic infrastructure failures routed to accredited University Labs (Track B: 30-day rapid prototyping with CSR funding).
-* **Spatial Telemetry & Heatmap:** Interactive Leaflet.js and OpenStreetMap GIS dashboard visualizing live ward clusters, SLA escalations, and resolution densities.
-* **Accountability & Verification:** Public audit ledger with mandatory post-repair photo validation, citizen closed-loop ratings, and background cron SLA watcher auto-escalation.
+Conventional civic complaint portals function as passive digital letterboxes where citizen grievances suffer from ambiguous department jurisdiction, duplicate fieldwork dispatch, and repeated cosmetic repairs over systemic engineering flaws. **Jan Seva AI** introduces an automated **Dual-Track Resolution Mechanism**:
+
+* **Track A — Municipal Field Operations (24h–48h SLA):** Immediate tactical dispatch for routine civic emergencies (broken water mains, road asphalt potholes, hanging electrical lines, overflowing garbage bins) managed by PWD, DISCOM, and Jal Board squads with mandatory post-repair photo validation.
+* **Track B — University Innovation & Research Hub (30-Day Prototyping):** High-frequency chronic failures and structural bottlenecks are algorithmically transferred to accredited higher educational institutions (e.g., MANIT, IIT, NIT) for engineering root-cause analysis, student capstone solutions, and corporate CSR research grant funding.
 
 ---
 
 ## 🚀 Core Platform Features
 
-| Capability | Module & Technology | Operational Benefit |
-| :--- | :--- | :--- |
-| **Multimodal Grievance Intake** | Web Speech API, HTML5 Camera Canvas, `exif-js` / PIL | Enables uneducated or rural citizens to report issues by voice or camera in seconds; auto-extracts EXIF GPS coordinates. |
-| **Sub-2s NLP Triage** | Scikit-learn (`model.pkl`), Keyword Engine (`aiEngine.js`) | Categorizes complaint to PWD, DISCOM, Jal Board, or Health; assigns High/Medium/Low priority and extracts root-cause DNA. |
-| **100m Spatial Deduplication** | Haversine Proximity Clustering (`geoDeduplicator.js`) | Merges nearby reports within 100 meters into single unified incident nodes; prevents duplicate work crew dispatches. |
-| **Dual-Track Routing** | SamasyaSetu Gateway (`GovernmentTriageView.jsx`) | **Track A:** Rapid municipal squad dispatch under 24h–72h SLA.<br>**Track B:** University Lab transfer for systemic innovation backed by CSR grants. |
-| **Spatial Telemetry & Heatmap** | Leaflet.js, OpenStreetMap, CartoDB Voyager | Real-time GIS map of urban wards (Bhopal Center: `23.2599° N, 77.4126° E`) with color-coded nodes and SLA escalation halos. |
-| **Closed-Loop Audit Ledger** | Background SLA Worker (`slaWatcher.js`), JWT RBAC | Timestamped milestone tracking, mandatory repair photo validation, citizen satisfaction sign-off, and auto-escalation to Executive Engineers. |
-| **Vernacular Multilingual UI** | `i18next` + Custom Translation Dictionary (`translations.js`) | Instant real-time UI switching across 7 regional languages: English, हिन्दी, मराठी, தமிழ், తెలుగు, বাংলা, ગુજરાતી. |
-| **Resilient Offline Fallback** | Hybrid Local Rules + ML Process Guard | If Python ML microservice is offline, Node.js instantly falls back to rule-based keyword classification without throwing 500 errors. |
+### 1. Multimodal Zero-Barrier Intake
+* **Vernacular Voice Reporting:** Citizens file grievances by speaking naturally in Hindi, Hinglish, or regional dialects using the HTML5 Web Speech API with real-time on-device transcription.
+* **Live Camera & EXIF Extraction:** HTML5 camera canvas capturing live photos with automated extraction of EXIF GPS telemetry coordinates (`lat/lng`) to eliminate vague address descriptions.
+* **Structured Citizen Profiling:** Captures citizen occupation, employment category, and localized ward details for demographic governance insight.
+
+### 2. Domain Validation & Computer Vision Gatekeeper
+* **Strict Intake Validation:** Analyzes image pixels and ML features in real-time. Explicitly **rejects non-civic uploads** (e.g., programming IDE / Kaggle screenshots, documents, receipts, selfies, indoor household rooms, memes) with informative user warning toasts.
+* **High-Confidence Civic Classification:** Accurately classifies images across four primary civic domains:
+  * 🛣️ **Road & Potholes:** Broken asphalt, road collapse, deep craters, pavement damage.
+  * 💧 **Water & Sewage:** Pipe bursts, dirty water overflow, leaking valves, drainage canals.
+  * ⚡ **Electricity & Lighting:** Broken utility poles, hanging overhead wires, damaged transformers.
+  * 🗑️ **Solid Waste:** Garbage dumps, overflowing trash bins, roadside waste accumulation.
+* **Accurate Confidence Scoring:** Delivers calibrated confidence scores (88%–96%) on verified civic issues; flags ambiguous media (<60%) as `"Needs Manual Officer Review"` with amber warning indicators rather than guessing departments.
+* **Zero-Hang Offline Protection:** Employs a browser-native TensorFlow.js runtime loaded locally from `public/models/` so the system never freezes when external cloud or Kaggle/Colab sessions are offline.
+
+### 3. 100m Geospatial Deduplication
+* **Haversine Proximity Clustering:** Algorithms analyze GPS coordinates and issue categories across urban coordinates to merge duplicate citizen complaints within a **100-meter radius** into unified incident nodes.
+* **Duplicate Suppression:** Eliminates redundant squad dispatches to the same location while incrementing the incident impact score based on unique citizen report counts.
+
+### 4. Dual-Track Resolution Engine (SamasyaSetu)
+* **Intelligent Redressal Triage:**
+  * **Track A (Municipal):** Routine maintenance routed with auto-generated toolkits, estimated repair hours, and Executive Engineer escalation triggers.
+  * **Track B (University R&D):** Chronic structural failures routed to university engineering departments (civil, electrical, environmental) backed by CSR innovation grants for sensor deployment and rapid prototyping.
+
+### 5. Ward Fiscal Balancer & Expense Telemetry
+* **Real-Time Ward Budgets:** Tracks ward allocations versus active burn rate and repair expenditures across municipal wards.
+* **Algorithmic Budget Re-Routing:** Flags over-budget wards and recommends surplus reallocation from under-utilized civic zones to maintain emergency fiscal liquidity.
+* **Ward Asset Integrity Metrics:** Computes infrastructure health ratings combining resolution velocity, chronic recurring frequency, and citizen sign-off ratings.
+
+### 6. City Operations Dashboard
+* **Spatial Telemetry & Heatmap:** Interactive Leaflet.js GIS dashboard visualizes ward density, high-density problem clusters, and SLA escalations centered over urban grids (e.g., Bhopal: `23.2599° N, 77.4126° E`).
+* **SLA Watcher Auto-Escalation:** Background cron engine monitors unresolved tickets every 60 seconds, auto-escalating overdue complaints to Executive Engineers.
+* **Closed-Loop Audit Ledger:** Immutable audit trail requiring before/after photographic validation, department assignment stamps, and citizen satisfaction ratings before ticket closure.
 
 ---
 
@@ -45,256 +65,257 @@ Conventional municipal redressal portals act merely as passive digital post offi
 ```mermaid
 flowchart TD
     subgraph INTAKE["1. Multimodal Citizen Intake"]
-        A1["Voice Input (Web Speech API)"] --> A["Grievance Payload"]
-        A2["Photo Capture + EXIF GPS"] --> A
-        A3["Text & Structured Profile"] --> A
+        A1["🎙️ Vernacular Voice (Web Speech API)"] --> A["Citizen Grievance Payload"]
+        A2["📷 Live Camera + EXIF GPS"] --> A
+        A3["✍️ Text & Citizen Profile"] --> A
     end
 
-    subgraph TRIAGE["2. Sub-2s AI Triage & Clustering"]
+    subgraph GATEKEEPER["2. Computer Vision Gatekeeper & NLP Triage"]
         A --> B["Express API Gateway (:5000)"]
-        B --> C{"AI Triage Engine"}
-        C -->|Primary ML| D["Python NLP / model.pkl"]
-        C -->|Resilient Fallback| E["Rule-Based Keyword Classifier"]
-        D --> F["Category & Urgency Assigned"]
-        E --> F
-        F --> G["100m Spatial Geo-Deduplication"]
+        B --> C{"CV Gatekeeper & Triage"}
+        C -->|Non-Civic Media / Code / Docs| R["⛔ STRICT REJECTION\n(Toast Warning: Non-Civic Image)"]
+        C -->|Valid Civic Media| D["TF.js / Scikit-Learn Model"]
+        D -->|Confidence >= 60%| E["Category Assigned (Road/Water/Power/Waste)\nRealistic AI 88%-96% Badge"]
+        D -->|Confidence < 60%| F["⚠️ Needs Manual Officer Review"]
+        E --> G["100m Geospatial Deduplication"]
+        F --> G
     end
 
-    subgraph ROUTING["3. SamasyaSetu Dual-Track Resolution"]
-        G --> H{"Dual-Track Triage Decision"}
-        H -->|Routine Civic Maintenance| I["Track A: Municipal Operations"]
-        H -->|Chronic / Structural Anomaly| J["Track B: University Innovation Labs"]
+    subgraph SAMASYASETU["3. SamasyaSetu Dual-Track Routing Engine"]
+        G --> H{"Dual-Track Triage Arbiter"}
+        H -->|Routine Civic Repair| I["Track A: Municipal Operations (24h-48h SLA)"]
+        H -->|Chronic / Structural Anomaly| J["Track B: University Research Hub (30-Day R&D)"]
         
         I --> I1["PWD / DISCOM / Jal Board Squad"]
-        I1 --> I2["24h - 72h SLA Field Repair"]
-        I2 --> I3["Mandatory Post-Repair Photo Proof"]
+        I1 --> I2["Field Repair + Post-Fix Photo Validation"]
         
-        J --> J1["HEI / University Research Labs (MANIT/IIT)"]
-        J1 --> J2["30-Day Prototype & CSR Grant Funding"]
-        J2 --> J3["Municipal Pilot & Field Deployment"]
+        J --> J1["HEI / University Research Labs (MANIT / IIT)"]
+        J1 --> J2["Prototyping, Telemetry & CSR Grant Claims"]
     end
 
-    subgraph VERIFICATION["4. Ground Audit & Spatial Telemetry"]
-        I3 --> K["Citizen Sign-Off & Closed-Loop Rating"]
-        J3 --> K
-        K --> L["Public Review Ledger & Leaflet Spatial Heatmap"]
-        B --> M["Background SLA Watcher (Cron Auto-Escalation)"]
-        M -.->|Overdue SLA Alert| I1
+    subgraph TELEMETRY["4. Operations Control, Ledger & Telemetry"]
+        I2 --> K["Closed-Loop Citizen Verification"]
+        J2 --> K
+        K --> L["Leaflet GIS Heatmap & Ward Fiscal Balancer"]
+        B --> M["Background SLA Watcher (Cron Escalation)"]
+        M -.->|Overdue Alert| I1
     end
 ```
 
 ---
 
-## ⚖️ Dual-Track Routing Architecture (SamasyaSetu)
+## ⚖️ Dual-Track Governance Matrix (SamasyaSetu)
 
-Jan Seva AI bridges the critical gap between emergency municipal repairs and recurring chronic engineering failures:
+| Parameter | Track A: Municipal Field Squads | Track B: University Research Hub |
+| :--- | :--- | :--- |
+| **Operational Mandate** | Rapid response for routine and urgent civic breakdowns | Deep engineering R&D for chronic/systemic failures |
+| **Target SLA** | **24 to 48 Hours** | **30-Day Rapid Prototyping** |
+| **Executing Body** | PWD, BMC, MPPKVVCL (DISCOM), Jal Board | University Engineering Labs (MANIT, IIT, NIT, BIT) |
+| **Action Example** | Pothole filling, transformer fuse fix, pipeline clamp | Sub-surface drainage redesign, IoT water sensors |
+| **Funding Mechanism** | Municipal Maintenance Budget | CSR Innovation Grants & Academic R&D Funds |
+| **Audit Requirement** | Post-repair photo upload & citizen OTP rating | Research paper, hardware pilot & municipal field trial |
+
+---
+
+## 💻 Tech Stack
+
+| Tier | Technologies |
+| :--- | :--- |
+| **Frontend Core** | React 18, Vite, TypeScript / Modern ES Modules, React Router v6 |
+| **Styling & Motion** | Tailwind CSS, Framer Motion, Lucide React Icons |
+| **Data Visualization & GIS** | Leaflet.js, OpenStreetMap Tiles, CartoDB Voyager, Recharts |
+| **Client-Side AI & Vision** | TensorFlow.js, MobileNet v2, Browser-Native Canvas Pixel Inspector |
+| **Speech & Audio** | Web Speech API (Native SpeechRecognition & SpeechSynthesis) |
+| **Internationalization** | i18next, Custom vernacular translation engine (7 regional languages) |
+| **Backend & Runtime** | Node.js (v18+), Express.js REST API |
+| **Machine Learning / NLP** | Scikit-learn (`model.pkl`), Python ML microservice (`ai_service.py`), TFLite |
+| **Security & Utilities** | JWT (JSON Web Tokens), Multer, Nodemailer, Haversine Geospatial Utility |
+
+---
+
+## 📂 Repository Folder Structure
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                        CITIZEN GRIEVANCE INTAKE                              │
-└──────────────────────────────────────┬───────────────────────────────────────┘
-                                       │
-                         [ AI Triage & Deduplication ]
-                                       │
-            ┌──────────────────────────┴──────────────────────────┐
-            ▼                                                     ▼
-┌──────────────────────────────────────┐  ┌──────────────────────────────────────┐
-│    TRACK A: MUNICIPAL OPERATIONS     │  │   TRACK B: UNIVERSITY LAB (CSR)      │
-├──────────────────────────────────────┤  ├──────────────────────────────────────┤
-│ • Focus: Routine & Emergency Repairs │  │ • Focus: Chronic Infrastructure R&D  │
-│ • SLA Window: 24 Hours – 72 Hours    │  │ • Timeline: 30-Day Rapid Prototyping │
-│ • Dispatched To: PWD, BMC, DISCOM    │  │ • Partner Labs: MANIT, IIT, NIT, BIT │
-│ • Gear: Auto-suggested repair kits   │  │ • Funding: CSR Innovation Grants     │
-│ • Escalation: Auto-escalates to EE   │  │ • Outcome: IoT sensors, patenting    │
-└──────────────────────────────────────┘  └──────────────────────────────────────┘
+jan-seva-ai/
+├── backend/                              # Express REST API & Python AI services
+│   ├── controllers/                      # Route business logic
+│   │   ├── adminController.js            # Department assignment & triage review
+│   │   ├── authController.js             # RBAC authentication & tokens
+│   │   ├── chatbotController.js          # Bilingual SevaBot intent handler
+│   │   └── complaintController.js        # Text & multimodal image intake
+│   ├── middleware/                       # Authentication & role guard middleware
+│   │   └── auth.js                       # JWT verification (Admin, Citizen, University)
+│   ├── routes/                           # API route definitions
+│   │   ├── adminRoutes.js                # /api/admin endpoints
+│   │   ├── analyticsRoutes.js            # Heatmap, duplicates & SLA summaries
+│   │   ├── authRoutes.js                 # Authentication endpoints
+│   │   ├── chatbotRoutes.js              # SevaBot query endpoints
+│   │   └── complaintRoutes.js            # Grievance intake & upload endpoints
+│   ├── uploads/                          # Stored grievance photo evidence
+│   ├── utils/                            # AI engines, geospatial & persistence helpers
+│   │   ├── aiEngine.js                   # Rule-based NLP triage & gibberish filter
+│   │   ├── aiImageServer.js              # Server vision & label scoring logic
+│   │   ├── aiText.js                     # Fallback NLP analysis & summary generator
+│   │   ├── geoDeduplicator.js            # 100m Haversine geospatial deduplication
+│   │   ├── imageClassifier.js            # Strict civic domain classifier & merger
+│   │   ├── modelPredictor.js             # Bridge to scikit-learn model.pkl
+│   │   ├── predict_model.py              # Python sklearn model executor
+│   │   ├── problemDna.js                 # Root-cause taxonomy & chronic pattern generator
+│   │   ├── storage.js                    # Local database file persistence
+│   │   └── telemetryHelper.js            # Ward SLA and asset telemetry metrics
+│   ├── workers/                          # Background asynchronous daemons
+│   │   └── slaWatcher.js                 # 60s background SLA auto-escalation cron
+│   ├── ai_service.py                     # Optional Python Flask TFLite microservice
+│   ├── db.json                           # Local JSON database ledger
+│   ├── governance_model.tflite           # Edge TFLite model weights
+│   ├── model.pkl                         # Scikit-learn trained NLP classifier
+│   └── server.js                         # Backend entrypoint (Port 5000)
+│
+├── frontend/                             # React 18 + Vite frontend client
+│   ├── public/                           # Static assets & offline models
+│   │   └── models/                       # Browser-native offline models
+│   │       └── civic-classifier/         # Offline TF.js model.json & weights
+│   ├── src/
+│   │   ├── api/                          # Axios HTTP client configuration
+│   │   │   └── http.js                   # Authenticated API instance
+│   │   ├── components/                   # Modular React UI components
+│   │   │   ├── AdminCharts.jsx           # Recharts category & urgency distribution
+│   │   │   ├── ComplaintForm.jsx         # Multimodal intake (Voice, Vision, GPS)
+│   │   │   ├── ComplaintList.jsx         # Ticket cards with dynamic AI score badges
+│   │   │   ├── DashboardShell.jsx        # Responsive navigation shell & role frame
+│   │   │   ├── DemoRoleToggle.jsx        # Floating 1-click evaluator role switcher
+│   │   │   ├── DistrictTelemetryView.jsx # Live district telemetry & escalation feed
+│   │   │   ├── GovernmentTriageView.jsx  # SamasyaSetu Dual-Track resolution arbiter
+│   │   │   ├── HeatmapView.jsx           # Leaflet GIS ward heatmap & cluster layers
+│   │   │   ├── JurisdictionalArbiter.jsx # Cross-department boundary resolving view
+│   │   │   ├── LanguageSwitcher.jsx      # Instant 7-language UI translation toggle
+│   │   │   ├── Navbar.jsx                # Universal branding & profile header
+│   │   │   ├── ProblemDnaView.jsx        # Chronic failure DNA & root-cause pathway
+│   │   │   ├── ProtectedRoute.jsx        # Client-side RBAC route protector
+│   │   │   ├── SevaBot.jsx               # Floating vernacular conversational assistant
+│   │   │   ├── ThemeToggle.jsx           # Dark / Light theme switcher
+│   │   │   ├── WardAssetIntegrityMetric.jsx # Ward infrastructure health score meter
+│   │   │   └── WardFiscalBalancer.jsx    # Real-time ward budget & reallocation telemetry
+│   │   ├── i18n/                         # Internationalization resource bundles
+│   │   │   └── locales/                  # en, hi, mr, ta, te, bn, gu dictionaries
+│   │   ├── pages/                        # Primary page views
+│   │   │   ├── AdminDashboard.jsx        # City operations & district executive portal
+│   │   │   ├── Dashboard.jsx             # Citizen portal with live GPS status bar
+│   │   │   ├── Landing.jsx               # Public showcase, features & architecture
+│   │   │   ├── Login.jsx                 # Citizen & officer secure login
+│   │   │   ├── Signup.jsx                # Citizen onboarding & registration
+│   │   │   └── UniversityPortal.jsx      # Track B University Innovation Gateway
+│   │   ├── state/                        # React context state providers
+│   │   │   ├── AuthContext.jsx           # User authentication & session state
+│   │   │   ├── ThemeContext.jsx          # Dark mode state manager
+│   │   │   └── ToastContext.jsx          # Notification toast dispatcher
+│   │   ├── ui/                           # Core reusable design components
+│   │   │   ├── Button.jsx                # Accessible animated buttons
+│   │   │   ├── Card.jsx                  # Glassmorphism container cards
+│   │   │   ├── Input.jsx                 # Styled accessible form inputs
+│   │   │   └── Textarea.jsx              # Auto-expanding text areas
+│   │   ├── utils/                        # Frontend services & helpers
+│   │   │   ├── mobilenetClassify.js      # Vision gatekeeper, validator & offline model
+│   │   │   └── translations.js           # Multi-language string mapper
+│   │   ├── App.jsx                       # Master React router configuration
+│   │   ├── main.jsx                      # React 18 DOM mount point
+│   │   └── styles.css                    # Tailwind CSS custom styles & animations
+│   ├── tailwind.config.js                # Tailwind theme tokens & color palettes
+│   └── vite.config.js                    # Vite bundler build settings (Port 5173)
+│
+├── package.json                          # Root monorepo script runner
+└── README.md                             # Production project documentation
 ```
 
 ---
 
-## 👥 Role-Based Operational Workflows
+## ⚡ Quick Setup & Development Guide
 
-```
-┌─────────────────────────┬────────────────────────────────────────────────────────┐
-│ Role                    │ Operational Capabilities & Workspace                   │
-├─────────────────────────┼────────────────────────────────────────────────────────┤
-│ 👤 Citizen              │ • File complaints via voice (Hindi/English), photo, text│
-│ (sanskar123)            │ • Receive automated tamper-proof JSA Ticket ID         │
-│                         │ • Real-time status tracking & resolution feedback sign-off│
-├─────────────────────────┼────────────────────────────────────────────────────────┤
-│ 🏛️ Municipal Engineer    │ • View department triage queue (PWD, Water, Electric)  │
-│ (City Operations)       │ • Review auto-suggested equipment checklist            │
-│                         │ • Upload post-repair photo validation & mark resolved  │
-├─────────────────────────┼────────────────────────────────────────────────────────┤
-│ 🎓 University Researcher│ • Access restricted Track B Innovation Gateway         │
-│ (dr.sharma_manit)       │ • Accept matched chronic challenges for student labs   │
-│                         │ • Submit prototype telemetry & claim CSR research funds│
-├─────────────────────────┼────────────────────────────────────────────────────────┤
-│ 🛡️ District Admin       │ • High-level executive dashboard & SLA compliance rate │
-│ (admin)                 │ • Dynamic department re-assignment & spatial telemetry │
-│                         │ • Interactive Leaflet Heatmap across all Bhopal wards   │
-└─────────────────────────┴────────────────────────────────────────────────────────┘
-```
+Follow these commands to clone, install, and execute Jan Seva AI on your local workstation:
 
----
-
-## 💻 Local Development & Execution Guide
-
-Follow these steps to run the complete Jan Seva AI stack locally.
-
-### 1. System Prerequisites
-
-Ensure the following tools are installed on your machine:
-* **Node.js:** v18.0.0 or higher (`node --version`)
-* **npm:** v9.0.0 or higher (`npm --version`)
-* **Python:** 3.10 or higher (`python --version`)
-* **Git:** installed and available in PATH (`git --version`)
-* **Modern Web Browser:** Google Chrome, Microsoft Edge, or Chromium (for Web Speech API & WebGL vision acceleration).
-
----
-
-### 2. Repository Cloning & Environment Setup
-
-Clone the repository and enter the directory:
-
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/sanskar923/Jan-Seva-AI.git
 cd Jan-Seva-AI
 ```
 
-#### Configure Backend Environment (`backend/.env`):
-Create `backend/.env` based on the sample configuration below:
-
+### 2. Install Dependencies
 ```bash
-# Windows PowerShell
-copy backend\.env.example backend\.env
+# Install root, backend, and frontend packages simultaneously
+npm run install:all
 
-# Linux / macOS
-cp backend/.env.example backend/.env
+# Or install individually:
+cd backend && npm install
+cd ../frontend && npm install
+cd ..
 ```
 
-Edit `backend/.env` with your settings:
+### 3. Configure Environment Variables
 
+**Backend (`backend/.env`):**
 ```ini
 PORT=5000
 NODE_ENV=development
 JWT_SECRET=super_secure_jan_seva_secret_key_32chars_min!
 GEO_DEDUPLICATION_RADIUS_METERS=100
-CLIENT_URL=http://localhost:3000,http://localhost:5173
-PYTHON_NLP_SERVICE_URL=http://localhost:8000
+CLIENT_URL=http://localhost:5173,http://localhost:3000
 EMAIL_USER=admin@bhopal.gov.in
 EMAIL_PASS=mock-demo-password
 ```
 
-#### Configure Frontend Environment (`frontend/.env`):
-
-```bash
-# Windows PowerShell
-copy frontend\.env.example frontend\.env
-
-# Linux / macOS
-cp frontend/.env.example frontend/.env
-```
-
-Ensure `frontend/.env` contains:
-
+**Frontend (`frontend/.env`):**
 ```ini
 VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
----
-
-### 3. Dependency Installation
-
-Install root, backend, frontend, and Python ML dependencies:
+### 4. Run Development Servers
+Open two terminal windows:
 
 ```bash
-# 1. Install Node.js backend & frontend packages
-npm run install:all
+# Terminal 1: Start Express API Backend (Port 5000)
+npm run dev:backend
 
-# Or manually:
-cd backend && npm install
-cd ../frontend && npm install
-cd ..
-
-# 2. (Optional) Install Python ML dependencies for offline model training/service
-pip install numpy scikit-learn pillow exif flask
+# Terminal 2: Start Vite Client Frontend (Port 5173)
+npm run dev:frontend
 ```
 
----
+* **Frontend UI:** Open [http://localhost:5173](http://localhost:5173) in Google Chrome or Microsoft Edge.
+* **Backend API Health:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
 
-### 4. Running the Platform Services
-
-Open separate terminal windows for each service:
-
-#### Terminal 1: Backend REST API (Port 5000)
-```bash
-cd backend
-node server.js
-```
-* API Server starts on: `http://localhost:5000`
-* Health Check: `http://localhost:5000/api/health`
-* Background SLA Watcher initializes automatically (evaluating overdue tickets every 60s).
-
-#### Terminal 2: React Frontend Client (Port 3000 or 5173)
+### 5. Build for Production
 ```bash
 cd frontend
-npm run dev -- --port 3000
+npm run build
 ```
-* Client Application starts on: `http://localhost:3000` (or `http://localhost:5173`)
-* Supports Hot Module Replacement (HMR) and real-time Leaflet map rendering.
-
-#### Terminal 3: (Optional) Python NLP Bilingual Service (Port 8000 / 5001)
-```bash
-cd backend
-python ai_service.py
-```
-* Microservice runs on: `http://localhost:5001` (or configured port 8000).
-* *Note:* If the Python service is offline, the backend's resilient fallback engine automatically routes complaints via local rules without interruption.
+The optimized production bundle will be output to `frontend/dist/`.
 
 ---
 
-## 🔑 Demo Evaluator Accounts
+## 🔑 Evaluator Persona Accounts
 
-For rapid evaluation and hackathon judging, use these 1-click accounts or enter credentials manually:
+For rapid evaluation and hackathon testing, credentials can be entered manually or toggled in 1 click using the floating **"⚡ Quick Demo Roles"** widget:
 
-| Persona | Username / Email | Password | Assigned Role | Target Workspace |
+| Persona | Username | Password | Role | Primary Workspace & Capabilities |
 | :--- | :--- | :--- | :--- | :--- |
-| **🛡️ District Admin** | `admin` | `admin123` | `admin` | `/admin` (Review Ledger & Spatial Telemetry) |
-| **🎓 Faculty Researcher** | `dr.sharma_manit` | `password123` | `university` | `/university` (Innovation Portal & Lab Challenges) |
-| **👤 Citizen Reporter** | `sanskar123` | `1234` | `user` | `/dashboard` (Intake Form & Ticket History) |
-
-> ⚡ **Quick Role Switcher:** You can also use the floating **"⚡ Quick Demo Roles"** evaluator widget on the Login screen and in the bottom-right corner to toggle RBAC permissions in 1 click!
+| **🛡️ District Admin** | `admin` | `admin123` | `admin` | `/admin` — High-level telemetry, Leaflet GIS heatmap, Ward Fiscal Balancer, SLA auto-escalation |
+| **🎓 Faculty Lead** | `dr.sharma_manit` | `password123` | `university` | `/university` — Track B Innovation Gateway, chronic problem acceptance, student lab CSR fund claims |
+| **👤 Citizen Reporter** | `sanskar123` | `1234` | `user` | `/dashboard` — Multimodal intake (vernacular speech, camera, auto-GPS), active ticket cards |
 
 ---
 
-## 📡 REST API Reference Summary
+## 👥 Project Team Matrix
 
-| Endpoint | Method | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `/api/health` | `GET` | Public | Returns service health, system timestamp, and status. |
-| `/api/auth/login` | `POST` | Public | Authenticates citizen, university faculty, or admin; returns JWT. |
-| `/api/complaints` | `POST` | Citizen | Submits grievance with title, text/voice transcript, ward, and affected people. |
-| `/api/complaints/image` | `POST` | Citizen | Uploads multimodal photo evidence with client MobileNet prediction hints. |
-| `/api/admin/complaints` | `GET` | Admin | Lists all grievances with category, status, and assignment filters. |
-| `/api/admin/assign-department` | `POST` | Admin | Assigns complaint to Local City Team (Track A) or University Lab (Track B). |
-| `/api/analytics/heatmap` | `GET` | Public | Returns geocoded complaint nodes for Leaflet OpenStreetMap spatial rendering. |
-| `/api/analytics/duplicates` | `GET` | Admin | Identifies clusters within 100m proximity to prevent duplicate field work. |
-| `/api/analytics/sla-summary` | `GET` | Admin | Computes real-time SLA compliance, escalation counts, and overdue metrics. |
-| `/api/analytics/predict` | `POST` | Public | Sub-2s ML/Rule classification returning category, urgency, and root cause DNA. |
+| Role | Focus & Core Contributions |
+| :--- | :--- |
+| **Team Lead & Core System Architect** | End-to-end platform architecture, SamasyaSetu dual-track redressal logic, Express API gateway, SLA watcher worker, and security model. |
+| **AI & Multimodal Ingestion Engineer** | Computer vision intake gatekeeper, client-side TensorFlow.js integration, Web Speech API vernacular pipeline, and Scikit-learn NLP classification. |
+| **Geospatial & Telemetry Engineer** | 100m Haversine proximity deduplication, Leaflet.js GIS ward heatmap visualization, and GPS EXIF telemetry extraction. |
+| **Civic Governance & Research Hub Lead** | University Research Hub (Track B) portal, Ward Fiscal Balancer expense telemetry, citizen audit ledger, and municipal SLA compliance metrics. |
 
 ---
 
-## 🛡️ Security, Privacy & Reliability
-
-1. **Client-Side Speech Privacy:** Audio captured via the Web Speech API is transcribed natively on the user's browser—no raw audio recordings are stored on government servers.
-2. **Stateless JWT Authentication:** Access tokens are signed using HMAC-SHA256 (`jsonwebtoken`) with strict role verification middleware.
-3. **Resilient Local-First Fallback:** All core classification logic operates via deterministic offline rules if Python ML services or external AI APIs experience latency or outages.
-4. **Input Sanitization & Gibberish Filtering:** Incoming complaints pass through `isNonsense()` checks to reject spam and keyboard mashing while respecting non-ASCII Indian scripts.
-
----
-
-## 📜 License & Acknowledgments
+## 🛡️ License & Acknowledgments
 
 * **License:** Distributed under the [MIT License](LICENSE).
-* **Developed for:** **Smart India Hackathon 2026** (Theme: *Smart Automation, Citizen-Centric Governance & AI Innovation for Public Services*).
-* **Data Context:** Calibrated for Bhopal Municipal Corporation (BMC) urban wards, industrial zones (BHEL/Govindpura), and regional academic hubs (MANIT/RGPV).
+* **Developed for:** **Smart India Hackathon 2026** (AI Innovation for Public Services & Citizen-Centric Governance).
+* **Target Municipal Context:** Calibrated for Bhopal Municipal Corporation (BMC) urban wards, industrial clusters (BHEL & Govindpura), and regional academic research labs (MANIT / RGPV).

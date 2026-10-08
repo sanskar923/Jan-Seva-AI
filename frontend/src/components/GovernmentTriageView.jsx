@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import http from "../api/http.js";
 import { useToast } from "../state/ToastContext.jsx";
+import JurisdictionalArbiter from "./JurisdictionalArbiter.jsx";
+import WardAssetIntegrityMetric from "./WardAssetIntegrityMetric.jsx";
 
 const AGENCY_OPTIONS = [
   "Municipal Corporation",
@@ -161,6 +164,32 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
     setSelectedComplaint(null);
   }
 
+  // Keyboard shortcut (Escape) & body scroll-lock management
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === "Escape" && modalType) {
+        closeModal();
+      }
+    }
+    if (modalType) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [modalType]);
+
+  const renderPortal = (content) => {
+    if (typeof document !== "undefined") {
+      return createPortal(content, document.body);
+    }
+    return content;
+  };
+
   async function handleConfirmCityAssignment(e) {
     e.preventDefault();
     if (!selectedComplaint) return;
@@ -231,62 +260,62 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
   });
 
   return (
-    <div className="rounded-3xl border border-white/40 bg-white/55 p-6 shadow-soft backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/40">
+    <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl backdrop-blur-md">
       {/* Section Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200/60 dark:border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xl">🏛️</span>
-            <h3 className="text-base font-black tracking-tight text-slate-900 dark:text-white">
+            <h3 className="text-base font-black tracking-tight text-white">
               Government Review Ledger
             </h3>
-            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-              SamasyaSetu Module 1
+            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+              Municipal Operations
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Review reported grievances, triage with SLA recommendations, and dispatch to Municipal teams or University Research Labs.
           </p>
         </div>
 
         {/* 4 Filter Tabs (Matching Screenshot 1) */}
-        <div className="flex flex-wrap items-center gap-1.5 rounded-2xl bg-slate-100 p-1.5 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800">
+        <div className="flex flex-wrap items-center gap-1.5 rounded-2xl bg-slate-950/80 p-1.5 border border-slate-800">
           <button
             onClick={() => setFilter("all")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               filter === "all"
-                ? "bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white"
-                : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
+                ? "bg-violet-600 text-white shadow-sm font-bold"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             All Reports ({complaints.length})
           </button>
           <button
             onClick={() => setFilter("needs_decision")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               filter === "needs_decision"
-                ? "bg-amber-500 text-slate-900 shadow-sm font-black"
-                : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
+                ? "bg-amber-500 text-slate-950 shadow-sm font-black"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             Needs Decision ({complaints.filter((c) => !c.assignment).length})
           </button>
           <button
             onClick={() => setFilter("city")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               filter === "city"
                 ? "bg-orange-500 text-white shadow-sm font-black"
-                : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             Assigned to City/PWD ({complaints.filter((c) => c.assignment?.assignedType === "city_team").length})
           </button>
           <button
             onClick={() => setFilter("university")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               filter === "university"
                 ? "bg-blue-600 text-white shadow-sm font-black"
-                : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             University Lab Projects ({complaints.filter((c) => c.assignment?.assignedType === "university").length})
@@ -309,7 +338,7 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
             return (
               <div
                 key={c.id}
-                className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm hover:shadow-md transition-all dark:border-slate-800 dark:bg-slate-950/60"
+                className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-950/60 p-4 shadow-sm hover:shadow-md transition-all"
               >
                 {/* Left: Problem Details */}
                 <div className="space-y-1.5 flex-1 min-w-0">
@@ -434,38 +463,18 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
       </div>
 
       {/* --- MODAL 1: ASSIGN TO LOCAL CITY DEPARTMENT --- */}
-      {modalType === "city" && selectedComplaint && (
+      {modalType === "city" && selectedComplaint && renderPortal(
         <div
-          className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0, 0, 0, 0.6)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            padding: "1rem"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 backdrop-blur p-4 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
           }}
         >
           <div
-            className="relative w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6"
-            style={{
-              maxWidth: "650px",
-              width: "100%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              margin: "auto",
-              borderRadius: "12px",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.3)"
-            }}
+            className="relative my-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-200/90 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4 dark:border-slate-800">
@@ -474,30 +483,63 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
                   <span>🏛️</span> Assign to Local City Department
                 </h3>
                 <span className="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold">
-                  Ticket #{selectedComplaint.ticketId} • Priority: {selectedComplaint.urgency}
+                  Ticket #{selectedComplaint.ticketId || selectedComplaint.id || "JSA-NEW"} • Priority: {selectedComplaint.urgency || "Medium"}
                 </span>
               </div>
               <button
+                type="button"
                 onClick={closeModal}
-                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer"
+                title="Close modal (Esc)"
               >
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleConfirmCityAssignment} className="space-y-4 text-xs">
-              {/* Read-Only Grievance Context */}
-              <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200/80 dark:bg-slate-950 dark:border-slate-800">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
-                  Reported Grievance (Read-Only)
+              {/* Read-Only Grievance Context & SLA Status Card */}
+              <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80 dark:bg-slate-950/80 dark:border-slate-800 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                    REPORTED GRIEVANCE (READ-ONLY)
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-900/60">
+                      ID: {selectedComplaint.ticketId || selectedComplaint.id || "JSA-NEW"}
+                    </span>
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                      {selectedComplaint.urgency || "Medium"} Priority
+                    </span>
+                    {selectedComplaint.isEscalated && (
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300 border border-red-200 dark:border-red-800 animate-pulse">
+                        ⚡ Escalated ({selectedComplaint.slaOverdueHours || 0}h Overdue)
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="font-bold text-slate-800 dark:text-slate-200 mb-1">
+
+                <div className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-relaxed">
                   {selectedComplaint.summary || selectedComplaint.text}
                 </div>
-                <div className="text-[11px] text-slate-500">
-                  📍 Location: <strong>{selectedComplaint.location || "Bhopal, MP"}</strong>
+
+                <div className="flex flex-wrap items-center gap-3 pt-2 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800">
+                  <span>📍 Location: <strong className="text-slate-700 dark:text-slate-300">{selectedComplaint.location || selectedComplaint.district || "Bhopal, MP"}</strong></span>
+                  <span>•</span>
+                  <span>Citizen: <strong className="text-slate-700 dark:text-slate-300">{selectedComplaint.fullname || selectedComplaint.username || "Citizen"}</strong></span>
+                  {selectedComplaint.peopleAffected && (
+                    <>
+                      <span>•</span>
+                      <span>Affected: <strong className="text-slate-700 dark:text-slate-300">{selectedComplaint.peopleAffected} citizens</strong></span>
+                    </>
+                  )}
                 </div>
               </div>
+
+              {/* Autonomous Jurisdictional Arbiter & Multi-Agency Dispatch */}
+              <JurisdictionalArbiter complaint={selectedComplaint} />
+
+              {/* Ward Officer Performance & Asset Integrity Score */}
+              <WardAssetIntegrityMetric complaint={selectedComplaint} />
 
               {/* Responsible Agency Dropdown */}
               <div>
@@ -662,14 +704,14 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl px-4 py-2.5 font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="rounded-xl px-4 py-2.5 font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="rounded-xl bg-[#141b2d] hover:bg-slate-800 text-white px-6 py-2.5 font-black uppercase tracking-wider shadow-lg transition-all"
+                  className="rounded-xl bg-[#141b2d] hover:bg-slate-800 text-white px-6 py-2.5 font-black uppercase tracking-wider shadow-lg transition-all cursor-pointer disabled:opacity-50"
                 >
                   {submitting ? "Saving Assignment..." : "CONFIRM CITY ASSIGNMENT"}
                 </button>
@@ -680,63 +722,75 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
       )}
 
       {/* --- MODAL 2: SEND TO UNIVERSITY --- */}
-      {modalType === "university" && selectedComplaint && (
+      {modalType === "university" && selectedComplaint && renderPortal(
         <div
-          className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0, 0, 0, 0.6)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            padding: "1rem"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 backdrop-blur p-4 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
           }}
         >
           <div
-            className="relative w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6"
-            style={{
-              maxWidth: "650px",
-              width: "100%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              margin: "auto",
-              borderRadius: "12px",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.3)"
-            }}
+            className="relative my-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-200/90 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4 dark:border-slate-800">
               <div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
                   <span>🎓</span> Send to University for Research & Prototyping
                 </h3>
-                <span className="text-xs font-mono text-amber-600 font-bold">
-                  Ticket #{selectedComplaint.ticketId}
+                <span className="text-xs font-mono text-amber-600 dark:text-amber-400 font-bold">
+                  Ticket #{selectedComplaint.ticketId || selectedComplaint.id || "JSA-NEW"} • Priority: {selectedComplaint.urgency || "Medium"}
                 </span>
               </div>
               <button
+                type="button"
                 onClick={closeModal}
-                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer"
+                title="Close modal (Esc)"
               >
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleConfirmUniversityAssignment} className="space-y-4 text-xs">
-              <div className="rounded-2xl bg-amber-500/10 p-3.5 border border-amber-500/20 text-slate-800 dark:text-slate-200">
-                <div className="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400 mb-1">
-                  Civic Challenge for Academic Innovation
+              {/* Read-Only Grievance Context & SLA Status Card */}
+              <div className="rounded-2xl bg-amber-500/10 p-4 border border-amber-500/20 text-slate-800 dark:text-slate-200 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">
+                    REPORTED GRIEVANCE (READ-ONLY) • CIVIC CHALLENGE
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                      ID: {selectedComplaint.ticketId || selectedComplaint.id || "JSA-NEW"}
+                    </span>
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-200/70 text-amber-900 dark:bg-amber-900/60 dark:text-amber-200">
+                      {selectedComplaint.urgency || "Medium"} Priority
+                    </span>
+                    {selectedComplaint.isEscalated && (
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300 border border-red-200 dark:border-red-800 animate-pulse">
+                        ⚡ Escalated ({selectedComplaint.slaOverdueHours || 0}h Overdue)
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="font-bold">{selectedComplaint.summary || selectedComplaint.text}</div>
-                <div className="text-[11px] text-slate-500 mt-1">📍 {selectedComplaint.location}</div>
+
+                <div className="text-xs font-bold leading-relaxed">
+                  {selectedComplaint.summary || selectedComplaint.text}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 pt-2 text-[11px] text-amber-800/80 dark:text-amber-300/80 border-t border-amber-500/20">
+                  <span>📍 Location: <strong>{selectedComplaint.location || selectedComplaint.district || "Bhopal, MP"}</strong></span>
+                  <span>•</span>
+                  <span>Citizen: <strong>{selectedComplaint.fullname || selectedComplaint.username || "Citizen"}</strong></span>
+                  {selectedComplaint.peopleAffected && (
+                    <>
+                      <span>•</span>
+                      <span>Affected: <strong>{selectedComplaint.peopleAffected} citizens</strong></span>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div>
@@ -812,14 +866,14 @@ export default function GovernmentTriageView({ complaints = [], onAssigned }) {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl px-4 py-2.5 font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="rounded-xl px-4 py-2.5 font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-900 px-6 py-2.5 font-black uppercase tracking-wider shadow-lg transition-all"
+                  className="rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-900 px-6 py-2.5 font-black uppercase tracking-wider shadow-lg transition-all cursor-pointer disabled:opacity-50"
                 >
                   {submitting ? "Assigning..." : "CONFIRM UNIVERSITY ASSIGNMENT"}
                 </button>

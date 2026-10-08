@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import http from "../api/http.js";
+import WardAssetIntegrityMetric from "./WardAssetIntegrityMetric.jsx";
 
 const DEFAULT_DISTRICT_TELEMETRY = [
   {
@@ -67,6 +68,7 @@ const DEFAULT_DISTRICT_TELEMETRY = [
 export default function DistrictTelemetryView({ refreshKey }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedWardIdx, setSelectedWardIdx] = useState(0);
 
   async function loadTelemetry() {
     try {
@@ -127,7 +129,7 @@ export default function DistrictTelemetryView({ refreshKey }) {
               Active Across Districts Telemetry Grid
             </h3>
             <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              SamasyaSetu Module 3
+              Ward Severity Grid
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
@@ -277,6 +279,40 @@ export default function DistrictTelemetryView({ refreshKey }) {
             );
           })}
         </div>
+      </div>
+
+      {/* ============================================================ */}
+      {/* WARD OFFICER PERFORMANCE & ASSET INTEGRITY SCORE SECTION      */}
+      {/* ============================================================ */}
+      <div className="pt-4 border-t border-slate-800/80 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-base">🛡️</span>
+            <span className="text-xs font-black uppercase tracking-wider text-slate-300">
+              Ward Asset Lifecycle & Officer Accountability Audit
+            </span>
+            <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              Executive Telemetry
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold text-slate-400">Audited Ward:</span>
+            <select
+              value={selectedWardIdx}
+              onChange={(e) => setSelectedWardIdx(Number(e.target.value))}
+              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-bold text-white outline-none focus:ring-1 focus:ring-amber-500/40"
+            >
+              {mergedDistricts.map((d, i) => (
+                <option key={i} value={i}>
+                  {d.district} ({d.activeDomain})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <WardAssetIntegrityMetric wardData={mergedDistricts[selectedWardIdx] || mergedDistricts[0]} />
       </div>
 
     </div>

@@ -159,6 +159,16 @@ export async function submitImageComplaint(req, res) {
     clientPrediction
   });
 
+  if (merged.rejected || clientPrediction?.rejected || clientPrediction?.isValid === false) {
+    unlinkComplaintImage(`/uploads/${file.filename}`);
+    return res.status(400).json({
+      message:
+        merged.message ||
+        clientPrediction?.message ||
+        "⚠️ Invalid Image: Please upload an authentic photo of the civic issue (road, water pipeline, garbage, or electrical hazard). Screenshots and documents are not accepted."
+    });
+  }
+
   const complaints = getComplaints();
   const ticketId = nextTicketId(complaints);
 

@@ -43,7 +43,7 @@
     "step3Body": "Admins filter the queue, update status, and monitor Recharts analytics including monthly trends.",
     "capabilities": "Capabilities",
     "capabilitiesSub": "Everything citizens expect from a modern portal",
-    "f1Title": "Multimodal intake",
+    "f1Title": "Report by Voice or Photo",
     "f1Desc": "Capture issues through typing, in-browser speech-to-text, or a photo with on-device MobileNet cues.",
     "f2Title": "Transparent AI",
     "f2Desc": "MobileNet in the browser plus deterministic keyword rules on the server — fully local classification path.",
@@ -87,7 +87,7 @@
   "shell": {
     "workspace": "Workspace",
     "submitTrack": "Submit & track",
-    "adminAnalytics": "Admin analytics",
+    "adminAnalytics": "City Operations Dashboard",
     "landing": "Landing",
     "theme": "Theme",
     "mobileTitle": "Jan Seva AI"
@@ -138,7 +138,7 @@
     "aiPrefix": "AI"
   },
   "admin": {
-    "title": "Admin analytics",
+    "title": "City Operations Dashboard",
     "subtitle": "Monitor every channel (text, voice-derived text, and image). Filter by category and status, update workflow, and view Recharts analytics.",
     "filters": "Filters",
     "filtersHint": "Narrow by category and/or status. Leave empty for the full queue.",

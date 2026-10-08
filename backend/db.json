@@ -76,6 +76,20 @@
       "password": "safa",
       "role": "user",
       "createdAt": "2026-09-28T11:54:16.319Z"
+    },
+    {
+      "id": "a5f80b69-007c-459b-81d1-1c6f1b378926",
+      "username": "daksh234",
+      "password": "12345",
+      "role": "user",
+      "createdAt": "2026-10-05T20:04:19.003Z"
+    },
+    {
+      "id": "e7c41b24-0787-41e9-8973-6505d7787112",
+      "username": "dgfsghhn",
+      "password": "12345",
+      "role": "user",
+      "createdAt": "2026-10-06T09:03:32.457Z"
     }
   ],
   "complaints": [
@@ -660,7 +674,7 @@
         "officerReviewNote": "Field verification conducted; priority escalated for field resolution.",
         "universityName": "",
         "researchFocus": "",
-        "assignedAt": "2026-09-28T13:34:26.620Z"
+        "assignedAt": "2026-10-05T20:19:08.884Z"
       }
     },
     {
@@ -703,7 +717,96 @@
         "universityName": "MANIT Bhopal Smart Water & IoT Lab",
         "researchFocus": "Deploy automated ultrasonic flow acoustic sensors to detect underground pipe ruptures before catastrophic ground surface blowouts.",
         "assignedAt": "2026-09-28T14:10:07.379Z"
-      }
+      },
+      "isEscalated": true,
+      "escalatedAt": "2026-10-05T20:01:28.738Z",
+      "slaHours": 96,
+      "slaOverdueHours": 78
+    },
+    {
+      "id": "df2b1b40-249a-459f-99b7-71b28b6ab7eb",
+      "ticketId": "JSA-2026-019",
+      "userId": "556f1036-4f86-4ada-bb4a-d34113f97bef",
+      "username": "sanskar123",
+      "fullname": "sanskar123",
+      "occupation": "Not Specified",
+      "employmentType": "Student",
+      "location": "BHEL & Govindpura Industrial · Bhopal, MP",
+      "ward": "BHEL & Govindpura Industrial",
+      "district": "BHEL & Govindpura Industrial",
+      "affectedPeople": 50,
+      "title": "brocken road",
+      "method": "image",
+      "text": "brocken road",
+      "category": "Road",
+      "urgency": "Medium",
+      "status": "Submitted",
+      "imageUrl": "/uploads/e93f1543-5e3a-4df5-978e-47cc7068caab.jpg",
+      "confidence": 0.5,
+      "summary": "brocken road",
+      "aiSource": "local-mobilenet+rules",
+      "topLabels": [],
+      "createdAt": "2026-10-08T08:45:35.272Z"
+    },
+    {
+      "id": "7f0e6333-6f71-447c-a1ea-1bd424c493d4",
+      "ticketId": "JSA-2026-020",
+      "userId": "556f1036-4f86-4ada-bb4a-d34113f97bef",
+      "username": "sanskar123",
+      "fullname": "Sanskar",
+      "occupation": "Not Specified",
+      "employmentType": "Other",
+      "location": "Bhopal, MP",
+      "ward": "Bhopal Central",
+      "district": "Bhopal Central",
+      "affectedPeople": null,
+      "title": "Deep road asphalt crater",
+      "method": "image",
+      "text": "Deep road asphalt crater",
+      "category": "Road",
+      "urgency": "Medium",
+      "status": "Submitted",
+      "imageUrl": "/uploads/892e056c-dbd3-4250-8758-faa52adc9b02.jpg",
+      "confidence": 0.92,
+      "summary": "Deep road asphalt crater",
+      "aiSource": "client-vision-model",
+      "topLabels": [
+        {
+          "label": "street, asphalt, pothole",
+          "score": 0.92
+        }
+      ],
+      "createdAt": "2026-10-08T09:09:46.898Z"
+    },
+    {
+      "id": "1b04fdee-ed06-4878-ba83-251b4d0955d8",
+      "ticketId": "JSA-2026-021",
+      "userId": "556f1036-4f86-4ada-bb4a-d34113f97bef",
+      "username": "sanskar123",
+      "fullname": "Sanskar",
+      "occupation": "Not Specified",
+      "employmentType": "Other",
+      "location": "Bhopal, MP",
+      "ward": "Bhopal Central",
+      "district": "Bhopal Central",
+      "affectedPeople": null,
+      "title": "Blurry infrastructure issue",
+      "method": "image",
+      "text": "Blurry infrastructure issue",
+      "category": "Needs Manual Officer Review",
+      "urgency": "Medium",
+      "status": "Submitted",
+      "imageUrl": "/uploads/949bc94e-f87d-4d59-b9d3-e956b48a6a57.jpg",
+      "confidence": 0.54,
+      "summary": "Blurry infrastructure issue",
+      "aiSource": "client-vision-model",
+      "topLabels": [
+        {
+          "label": "drain",
+          "score": 0.54
+        }
+      ],
+      "createdAt": "2026-10-08T09:09:46.904Z"
     }
   ]
 }

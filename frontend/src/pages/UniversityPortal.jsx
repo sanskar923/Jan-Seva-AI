@@ -161,10 +161,10 @@ export default function UniversityPortal() {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                Restricted Access: University Innovation Labs
+                Restricted Access: College Research Hub
               </h1>
               <p className="text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider mt-1">
-                SamasyaSetu • Track B Engineering Gateway
+                College Research Hub • Long-Term Solutions Gateway
               </p>
             </div>
           </div>
@@ -186,10 +186,10 @@ export default function UniversityPortal() {
             </div>
             <div className="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40">
               <div className="font-extrabold text-indigo-900 dark:text-indigo-300 mb-1 flex items-center gap-1.5">
-                <span>🎓</span> University Labs (Track B)
+                <span>🎓</span> Engineering Colleges (Track B)
               </div>
               <p className="text-indigo-700/80 dark:text-indigo-400 text-[11px] leading-relaxed">
-                Accept chronic engineering challenges, build rapid hardware prototypes, and access CSR research grants.
+                Accept chronic engineering challenges, build working prototypes, and access CSR research grants.
               </p>
             </div>
           </div>
@@ -246,15 +246,15 @@ export default function UniversityPortal() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-10 px-4 transition-colors">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-100 py-10 px-4 transition-colors">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Top Header Banner */}
-        <div className="rounded-3xl border border-indigo-200/80 bg-gradient-to-r from-indigo-900/90 via-slate-900 to-indigo-950 p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
+        <div className="rounded-3xl border border-slate-800/80 bg-gradient-to-r from-slate-900 via-[#10172a] to-slate-900 p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
           
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-indigo-300 text-xs font-black uppercase tracking-wider mb-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-violet-300 text-xs font-black uppercase tracking-wider mb-4">
               {dict.uniPortalBadge}
             </div>
             
@@ -262,37 +262,37 @@ export default function UniversityPortal() {
               {dict.uniPortalTitle}
             </h1>
             
-            <p className="text-sm sm:text-base text-indigo-200/90 leading-relaxed font-normal mb-6">
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal mb-6">
               {dict.uniPortalSub}
             </p>
 
             {/* Quick Stat Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <div className="rounded-xl bg-white/10 p-3 border border-white/10">
-                <div className="text-[10px] uppercase font-bold text-indigo-300">Matched Problems</div>
+              <div className="rounded-xl bg-slate-900/50 p-3 border border-white/5 hover:border-white/10 transition-colors">
+                <div className="text-[10px] uppercase font-bold text-violet-400">Open City Challenges</div>
                 <div className="text-xl font-black text-white">{problems.length} Challenges</div>
               </div>
-              <div className="rounded-xl bg-white/10 p-3 border border-white/10">
-                <div className="text-[10px] uppercase font-bold text-indigo-300">Accepted Pilots</div>
+              <div className="rounded-xl bg-slate-900/50 p-3 border border-white/5 hover:border-white/10 transition-colors">
+                <div className="text-[10px] uppercase font-bold text-violet-400">Projects in Progress</div>
                 <div className="text-xl font-black text-emerald-400">
-                  {problems.filter((p) => p.status === "Accepted").length} Lab Projects
+                  {problems.filter((p) => p.status === "Accepted").length} Projects
                 </div>
               </div>
-              <div className="rounded-xl bg-white/10 p-3 border border-white/10">
-                <div className="text-[10px] uppercase font-bold text-indigo-300">CSR Grant Pool</div>
+              <div className="rounded-xl bg-slate-900/50 p-3 border border-white/5 hover:border-white/10 transition-colors">
+                <div className="text-[10px] uppercase font-bold text-violet-400">Research & CSR Grants</div>
                 <div className="text-xl font-black text-amber-300">₹42.5 Lakhs</div>
               </div>
-              <div className="rounded-xl bg-white/10 p-3 border border-white/10">
-                <div className="text-[10px] uppercase font-bold text-indigo-300">Partner HEIs</div>
-                <div className="text-xl font-black text-white">6 Universities</div>
+              <div className="rounded-xl bg-slate-900/50 p-3 border border-white/5 hover:border-white/10 transition-colors">
+                <div className="text-[10px] uppercase font-bold text-violet-400">Partner Engineering Colleges</div>
+                <div className="text-xl font-black text-white">6 Colleges</div>
               </div>
             </div>
 
             {/* Active Faculty Session Info & Quick Citizen Toggle */}
             {user && (
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur">
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-950/40 border border-slate-800/80 backdrop-blur">
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-xl bg-indigo-500/30 border border-indigo-400/40 grid place-items-center text-lg">
+                  <div className="h-9 w-9 rounded-xl bg-violet-500/20 border border-violet-500/30 grid place-items-center text-lg">
                     🎓
                   </div>
                   <div>
@@ -302,7 +302,7 @@ export default function UniversityPortal() {
                         {user.role === "admin" ? "Admin Supervisor" : "Verified Faculty"}
                       </span>
                     </div>
-                    <div className="text-[11px] text-indigo-200">
+                    <div className="text-[11px] text-slate-400">
                       {user.institution || "MANIT Bhopal"} • {user.lab || "Accredited Innovation Lab"}
                     </div>
                   </div>
@@ -311,7 +311,7 @@ export default function UniversityPortal() {
                 <button
                   type="button"
                   onClick={() => loginAsDemo("citizen")}
-                  className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-bold text-white transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-white transition-all flex items-center gap-1.5 cursor-pointer"
                   title="Switch to Citizen View to test Gatekeeper RBAC"
                 >
                   <span>🔄</span> Test Citizen RBAC Restriction
@@ -322,49 +322,49 @@ export default function UniversityPortal() {
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 shadow-xl backdrop-blur-md">
           
           {/* Status Tabs */}
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setActiveTab("all")}
-              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                 activeTab === "all"
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                  ? "bg-violet-600 text-white shadow-sm"
+                  : "text-slate-400 hover:bg-slate-800/60 hover:text-white"
               }`}
             >
-              All Matched ({problems.length})
+              All Challenges ({problems.length})
             </button>
             <button
               onClick={() => setActiveTab("pending")}
-              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                 activeTab === "pending"
-                  ? "bg-amber-500 text-slate-900 font-black shadow-sm"
-                  : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                  ? "bg-amber-500 text-slate-950 font-black shadow-sm"
+                  : "text-slate-400 hover:bg-slate-800/60 hover:text-white"
               }`}
             >
               Pending Review ({problems.filter((p) => p.status === "Pending").length})
             </button>
             <button
               onClick={() => setActiveTab("accepted")}
-              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                 activeTab === "accepted"
                   ? "bg-emerald-600 text-white font-black shadow-sm"
-                  : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                  : "text-slate-400 hover:bg-slate-800/60 hover:text-white"
               }`}
             >
-              Accepted by Labs ({problems.filter((p) => p.status === "Accepted").length})
+              Projects in Progress ({problems.filter((p) => p.status === "Accepted").length})
             </button>
           </div>
 
           {/* Academic Partner Dropdown */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500">Institution:</span>
+            <span className="text-xs font-bold text-slate-400">Institution:</span>
             <select
               value={selectedInstitute}
               onChange={(e) => setSelectedInstitute(e.target.value)}
-              className="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950 text-slate-800 dark:text-slate-200 outline-none"
+              className="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-700/80 bg-slate-950/60 text-white outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 cursor-pointer"
             >
               <option value="All Institutions">All Institutions (All)</option>
               <option value="MANIT Bhopal">MANIT Bhopal</option>
@@ -414,20 +414,20 @@ export default function UniversityPortal() {
                     layout
                     className={`rounded-3xl border transition-all ${
                       isAccepted
-                        ? "border-emerald-300/80 bg-emerald-50/20 dark:border-emerald-900/60 dark:bg-emerald-950/20"
-                        : "border-slate-200/90 bg-white dark:border-slate-800 dark:bg-slate-900/70"
-                    } p-6 shadow-sm hover:shadow-md flex flex-col justify-between`}
+                        ? "border-emerald-500/30 bg-emerald-500/10"
+                        : "border-slate-800 bg-slate-900/60 backdrop-blur-md"
+                    } p-6 shadow-xl hover:border-slate-700/80 flex flex-col justify-between`}
                   >
                     <div>
                       {/* Top Header of Card */}
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2.5 py-0.5 rounded-lg border border-indigo-200/60 dark:border-indigo-900/60">
+                          <span className="font-mono text-xs font-black text-violet-400 bg-violet-950/60 px-2.5 py-0.5 rounded-lg border border-violet-800/60">
                             {p.id}
                           </span>
                           
                           {/* AI Match Score Badge (Screenshot 2 Match) */}
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                             <span>⚡</span> {p.matchScore}% {dict.matchBadge}
                           </span>
 
@@ -436,7 +436,7 @@ export default function UniversityPortal() {
                             className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                               isAccepted
                                 ? "bg-emerald-600 text-white"
-                                : "bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
+                                : "bg-amber-500/10 text-amber-300 border border-amber-500/20"
                             }`}
                           >
                             {isAccepted ? dict.statusAccepted : dict.statusPending}
@@ -447,7 +447,7 @@ export default function UniversityPortal() {
                         {!isAccepted && (
                           <button
                             onClick={() => handleReject(p.id)}
-                            className="text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 p-1.5 rounded-xl transition-colors cursor-pointer"
+                            className="text-slate-400 hover:text-red-400 hover:bg-red-500/10 p-1.5 rounded-xl transition-colors cursor-pointer"
                             title={dict.rejectBtn}
                           >
                             ✕
@@ -456,15 +456,15 @@ export default function UniversityPortal() {
                       </div>
 
                       {/* Problem Title */}
-                      <h3 className="text-base font-black text-slate-900 dark:text-white mb-2 leading-snug">
+                      <h3 className="text-base font-black text-white mb-2 leading-snug">
                         {p.title}
                       </h3>
 
-                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                      <p className="text-xs text-slate-300 leading-relaxed mb-4">
                         {p.summary}
                       </p>
 
-                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-4">
+                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 font-semibold mb-4">
                         <span>📍 {p.district}</span>
                         <span>•</span>
                         <span>🏛️ {p.leadInstitute}</span>
@@ -474,11 +474,11 @@ export default function UniversityPortal() {
                     {/* Footer Actions & Expandable Details */}
                     <div>
                       {/* Action Button & Expand Toggle Bar */}
-                      <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                      <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-800/80">
                         {/* Details & Skills Expandable Dropdown */}
                         <button
                           onClick={() => toggleExpand(p.id)}
-                          className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
                         >
                           <span>{isExpanded ? `${dict.detailsSkills} ▲` : `${dict.detailsSkills} ▼`}</span>
                         </button>
@@ -493,7 +493,7 @@ export default function UniversityPortal() {
                             <span>{dict.acceptBtn}</span>
                           </button>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                          <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-400 uppercase tracking-wider">
                             <span>✓ {dict.statusAccepted}</span>
                           </span>
                         )}
@@ -506,7 +506,7 @@ export default function UniversityPortal() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
-                            className="overflow-hidden mt-4 pt-4 border-t border-dashed border-slate-200 dark:border-slate-800 space-y-3 text-xs"
+                            className="overflow-hidden mt-4 pt-4 border-t border-dashed border-slate-800 space-y-3 text-xs"
                           >
                             {/* Skills Required */}
                             <div>
@@ -517,7 +517,7 @@ export default function UniversityPortal() {
                                 {p.skills.map((skill, sIdx) => (
                                   <span
                                     key={sIdx}
-                                    className="px-2.5 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold text-[10px] border border-indigo-200/60 dark:border-indigo-900/60"
+                                    className="px-2.5 py-0.5 rounded-lg bg-violet-950/60 text-violet-300 font-bold text-[10px] border border-violet-800/60"
                                   >
                                     {skill}
                                   </span>
@@ -526,12 +526,12 @@ export default function UniversityPortal() {
                             </div>
 
                             {/* CSR Partner & Grant */}
-                            <div className="rounded-xl bg-amber-500/10 p-3 border border-amber-500/20 text-slate-800 dark:text-slate-200">
-                              <div className="text-[10px] font-black uppercase text-amber-700 dark:text-amber-400 mb-1">
+                            <div className="rounded-xl bg-amber-500/10 p-3 border border-amber-500/20 text-slate-200">
+                              <div className="text-[10px] font-black uppercase text-amber-400 mb-1">
                                 {dict.csrFunding}
                               </div>
                               <div className="font-bold text-xs">{p.csrPartner}</div>
-                              <div className="text-[11px] text-slate-500 mt-1">
+                              <div className="text-[11px] text-slate-400 mt-1">
                                 Estimated Prototype Timeline: <strong>{p.targetDays} Days</strong>
                               </div>
                             </div>
@@ -541,7 +541,7 @@ export default function UniversityPortal() {
                               <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
                                 {dict.suggestedHardware}
                               </div>
-                              <div className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">
+                              <div className="text-slate-300 text-[11px] font-medium">
                                 {p.equipment}
                               </div>
                             </div>

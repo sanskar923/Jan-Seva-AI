@@ -92,8 +92,8 @@ export default function AdminCharts({ complaints }) {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/40 bg-white/55 p-4 shadow-soft backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/40">
-          <div className="px-2 pb-2 text-sm font-extrabold">{t("admin.byCategory")}</div>
+        <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-4 shadow-xl backdrop-blur-md">
+          <div className="px-2 pb-2 text-sm font-extrabold text-white">{t("admin.byCategory")}</div>
           <div className="h-64 w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -109,8 +109,8 @@ export default function AdminCharts({ complaints }) {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/40 bg-white/55 p-4 shadow-soft backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/40">
-          <div className="px-2 pb-2 text-sm font-extrabold">{t("admin.byStatus")}</div>
+        <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-4 shadow-xl backdrop-blur-md">
+          <div className="px-2 pb-2 text-sm font-extrabold text-white">{t("admin.byStatus")}</div>
           <div className="h-64 w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={statusRows} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -118,15 +118,15 @@ export default function AdminCharts({ complaints }) {
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-12} textAnchor="end" height={48} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                 <Tooltip />
-                <Bar dataKey="count" name={t("admin.count")} fill="rgba(79, 70, 229, 0.65)" radius={[10, 10, 4, 4]} />
+                <Bar dataKey="count" name={t("admin.count")} fill="rgba(139, 92, 246, 0.75)" radius={[10, 10, 4, 4]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      <div className="rounded-3xl border border-white/40 bg-white/55 p-4 shadow-soft backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/40">
-        <div className="px-2 pb-2 text-sm font-extrabold">{t("admin.monthlyTrend")}</div>
+      <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-4 shadow-xl backdrop-blur-md">
+        <div className="px-2 pb-2 text-sm font-extrabold text-white">{t("admin.monthlyTrend")}</div>
         <div className="h-72 w-full min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={monthlyRows} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>

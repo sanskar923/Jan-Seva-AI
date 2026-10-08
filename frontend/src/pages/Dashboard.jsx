@@ -126,21 +126,21 @@ export default function Dashboard() {
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border p-6 rounded-[32px] shadow-sm transition-all duration-300 ${
-            locationData.coords ? 'border-emerald-200 bg-emerald-50/20' : 'border-slate-100'
+          className={`flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl border backdrop-blur-md shadow-xl transition-all duration-300 ${
+            locationData.coords ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-slate-800 bg-slate-900/60'
           }`}
         >
           <div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f9a61a] mb-1">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-400 mb-1">
               Active Intelligence: Geolocation
             </h3>
-            <p className={`text-sm font-bold ${locationData.coords ? 'text-emerald-700' : 'text-[#141b2d]'}`}>
+            <p className={`text-sm font-bold ${locationData.coords ? 'text-emerald-400' : 'text-slate-200'}`}>
               {locationData.address || "Area not detected — use auto-detect below"}
             </p>
           </div>
           <button
             onClick={handleGetLocation}
-            className="px-6 py-3 bg-[#f9a61a] text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 transition-all active:translate-y-0 flex items-center gap-2"
+            className="px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-violet-600/25 hover:-translate-y-0.5 transition-all active:translate-y-0 flex items-center gap-2 cursor-pointer"
           >
             <span className="text-base font-normal">📍</span> 
             {locationData.coords ? "Update Location" : "Auto-Detect Area"}

@@ -216,25 +216,25 @@ export default function HeatmapView() {
   }, [filteredPoints]);
 
   return (
-    <div className="rounded-3xl border border-white/40 bg-white/55 p-6 shadow-soft backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/40">
+    <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl backdrop-blur-md">
       {/* Header & Filter Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
-          <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <h3 className="text-base font-extrabold text-white flex items-center gap-2">
             <span>🗺️</span> Civic Grievance Spatial Heatmap
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-400">
             Real Leaflet / OpenStreetMap density view across Bhopal wards & GPS reporting nodes.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
             <span>Filter:</span>
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold dark:border-slate-700 dark:bg-slate-950 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+              className="rounded-xl border border-slate-700/80 bg-slate-950/60 px-2.5 py-1 text-xs font-semibold text-white outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
             >
               <option value="all">All Categories</option>
               <option value="Electricity">Electricity (Purple)</option>
@@ -246,7 +246,7 @@ export default function HeatmapView() {
           </div>
 
           <div className="flex items-center gap-2 text-[11px] font-black uppercase">
-            <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+            <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               {filteredPoints.length} Points Mapped
             </span>
           </div>
@@ -255,13 +255,12 @@ export default function HeatmapView() {
 
       {/* Explicit Map Container Sizing as requested */}
       <div
-        className="overflow-hidden border border-slate-200/80 shadow-md dark:border-slate-800"
+        className="rounded-2xl border border-slate-800 overflow-hidden shadow-2xl"
         style={{
           height: "420px",
           width: "100%",
           position: "relative",
-          zIndex: 1,
-          borderRadius: "12px"
+          zIndex: 1
         }}
       >
         <div

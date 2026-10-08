@@ -10,6 +10,7 @@ import { useToast } from "../state/ToastContext.jsx";
 import { useAuth } from "../state/AuthContext.jsx";
 import { useAppTranslation } from "../utils/translations.js";
 import { speechRecognitionLang } from "../lib/speechLocale.js";
+import { classifyImageFile } from "../utils/mobilenetClassify.js";
 
 function getSpeechRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -30,6 +31,7 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
   const [analyzingImage, setAnalyzingImage] = useState(false);
   const [imageAnalysis, setImageAnalysis] = useState(null);
   const recRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   // NEW: Live Vision & Geolocation States
   const videoRef = useRef(null);
@@ -54,23 +56,62 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  function handlePhotoChange(e) {
+  async function handlePhotoChange(e) {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    setAnalyzingImage(true);
+    try {
+      const analysis = await classifyImageFile(file);
+      if (!analysis || !analysis.isValid || analysis.rejected) {
+        toast.error(
+          analysis?.message ||
+          "⚠️ Invalid Image: Please upload an authentic photo of the civic issue (road, water pipeline, garbage, or electrical hazard). Screenshots and documents are not accepted."
+        );
+        setPhotoFile(null);
+        setPhotoPreview(null);
+        setImageAnalysis(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        e.target.value = "";
+        return;
+      }
+
       setPhotoFile(file);
       setPhotoPreview(URL.createObjectURL(file));
+      setImageAnalysis(analysis);
+
+      if (analysis.needsReview || analysis.confidence < 0.60) {
+        toast.info(
+          `⚠️ Civic media accepted with low confidence (${Math.round(analysis.confidence * 100)}%). Tagged for Manual Officer Review.`
+        );
+      } else {
+        toast.success(
+          `✅ Civic Media Verified: ${analysis.category} • AI ${Math.round(analysis.confidence * 100)}% Match`
+        );
+      }
+    } catch (err) {
+      console.error("Image classification error:", err);
+      toast.error("Failed to analyze image. Please try another photo.");
+      setPhotoFile(null);
+      setPhotoPreview(null);
+      setImageAnalysis(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } finally {
+      setAnalyzingImage(false);
     }
   }
 
-  // Logic: Updated to allow submission with text or title
-  const canSubmitText = useMemo(() => 
-    (text.trim().length > 0 || title.trim().length > 0) && fullname.trim().length > 0 && !busy, 
-    [text, title, fullname, busy]
-  );
+  // Logic: Updated to enforce valid image verification when image is attached
+  const canSubmitText = useMemo(() => {
+    const hasText = text.trim().length > 0 || title.trim().length > 0;
+    const hasName = fullname.trim().length > 0;
+    const isImageValid = !photoFile || (imageAnalysis && imageAnalysis.isValid);
+    return hasText && hasName && !busy && !analyzingImage && isImageValid;
+  }, [text, title, fullname, busy, analyzingImage, photoFile, imageAnalysis]);
   
   const canSubmitImage = useMemo(() => 
-    isLive && fullname.trim().length > 0 && !busy, 
-    [isLive, fullname, busy]
+    isLive && fullname.trim().length > 0 && !busy && !analyzingImage, 
+    [isLive, fullname, busy, analyzingImage]
   );
 
   const speechSupported = useMemo(() => Boolean(getSpeechRecognition()), []);
@@ -126,6 +167,11 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
       const fullDescription = title ? (text ? `${title} — ${text}` : title) : text;
 
       if (photoFile) {
+        if (!imageAnalysis || !imageAnalysis.isValid) {
+          toast.error("Please provide a valid civic photo before submitting.");
+          return;
+        }
+
         const fd = new FormData();
         fd.append("image", photoFile, photoFile.name || "photo_evidence.jpg");
         fd.append("fullname", fullname);
@@ -137,6 +183,9 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
         fd.append("location", finalLocation);
         fd.append("caption", title || "Photo Evidence Report");
         fd.append("text", fullDescription);
+        fd.append("clientPrediction", JSON.stringify(imageAnalysis));
+        fd.append("category", imageAnalysis.category);
+        fd.append("confidence", String(imageAnalysis.confidence));
 
         await http.post("/complaints/image", fd, {
           headers: { "Content-Type": "multipart/form-data" }
@@ -159,6 +208,8 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
       setPeopleAffected("");
       setPhotoFile(null);
       setPhotoPreview(null);
+      setImageAnalysis(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       setFullname("");
       setOccupation("");
       toast.success(t("complaint.textSuccess"));
@@ -173,22 +224,36 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
   async function submitImage() {
     if (!canSubmitImage) return;
     setBusy(true);
+    setAnalyzingImage(true);
     try {
-      const fd = new FormData();
-      
       // Captured strictly from Live Vision
       const canvas = document.createElement("canvas");
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+      canvas.width = videoRef.current.videoWidth || 640;
+      canvas.height = videoRef.current.videoHeight || 480;
       canvas.getContext("2d").drawImage(videoRef.current, 0, 0);
       const blob = await new Promise(res => canvas.toBlob(res, "image/jpeg"));
-      fd.append("image", blob, "live_capture.jpg");
 
+      const analysis = await classifyImageFile(blob);
+      if (!analysis || !analysis.isValid || analysis.rejected) {
+        toast.error(
+          analysis?.message ||
+          "⚠️ Invalid Image: Please upload an authentic photo of the civic issue (road, water pipeline, garbage, or electrical hazard). Screenshots and documents are not accepted."
+        );
+        return;
+      }
+
+      setImageAnalysis(analysis);
+
+      const fd = new FormData();
+      fd.append("image", blob, "live_capture.jpg");
       fd.append("fullname", fullname);
       fd.append("occupation", occupation);
       fd.append("employmentType", employmentType);
       fd.append("location", currentLocation?.address || "Bhopal, MP");
       fd.append("caption", caption || "Image Report");
+      fd.append("clientPrediction", JSON.stringify(analysis));
+      fd.append("category", analysis.category);
+      fd.append("confidence", String(analysis.confidence));
       
       await http.post("/complaints/image", fd, { 
         headers: { "Content-Type": "multipart/form-data" } 
@@ -205,6 +270,7 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
       toast.error(e?.response?.data?.message || t("complaint.imageError"));
     } finally {
       setBusy(false);
+      setAnalyzingImage(false);
     }
   }
 
@@ -264,13 +330,13 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
   }
 
   return (
-    <Card glass className="p-8 border-t-4 border-t-[#f9a61a]">
+    <Card glass className="p-8 border border-slate-800 bg-slate-900/60 backdrop-blur-md rounded-2xl shadow-xl">
       <div className="flex flex-wrap items-end justify-between gap-3 mb-8">
         <div>
-          <div className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+          <div className="text-2xl font-black tracking-tight text-white">
             {dict.formTitle || t("complaint.title")}
           </div>
-          <div className="text-[10px] text-[#f9a61a] font-black uppercase tracking-[0.2em]">
+          <div className="text-[10px] text-violet-400 font-black uppercase tracking-[0.2em]">
             {dict.formSubtitle || "Governance, Accelerated by AI"}
           </div>
         </div>
@@ -288,14 +354,14 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
       </div>
 
       {/* --- LIVE LOCATION OVERLAY --- */}
-      <div className="mb-4 bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-2xl border border-emerald-100 dark:border-emerald-800">
-        <span className="text-[10px] font-black uppercase text-emerald-700 dark:text-emerald-400">
+      <div className="mb-6 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl px-4 py-2 flex items-center gap-2">
+        <span className="text-xs font-bold">
           {currentLocation?.address || "Detecting live position..."}
         </span>
       </div>
 
       {/* --- STEP 1: CITIZEN IDENTIFICATION --- */}
-      <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-[24px] mb-8 border border-slate-100 dark:border-slate-800">
+      <div className="bg-slate-950/40 p-6 rounded-2xl mb-8 border border-slate-800/80">
         <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
           {dict.step1TitleCitizen || "Step 1: Citizen Identification"}
         </h4>
@@ -313,13 +379,13 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
             placeholder={dict.occupationPlaceholder || "e.g. Farmer, Teacher"}
           />
           <div className="md:col-span-2">
-            <label className="block mb-1 text-[10px] font-black uppercase text-slate-500">
+            <label className="block mb-1 text-[10px] font-black uppercase text-slate-400">
               {dict.employmentLabel || "Employment Category"}
             </label>
             <select 
               value={employmentType}
               onChange={(e) => setEmploymentType(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-bold dark:border-slate-800 dark:bg-slate-950 outline-none focus:ring-2 focus:ring-[#f9a61a]/20 transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-slate-700/80 bg-slate-950/60 text-white text-sm font-semibold outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
             >
               <option value="Farmer">{dict.farmer || "Farmer (Kisan)"}</option>
               <option value="Govt Job">{dict.govtJob || "Government Employee"}</option>
@@ -349,13 +415,13 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
           {/* District / Ward Zone & People Affected Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block mb-1 text-[10px] font-black uppercase text-slate-500">
+              <label className="block mb-1 text-[10px] font-black uppercase text-slate-400">
                 {dict.districtLabel || "District / Ward Zone *"}
               </label>
               <select
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold dark:border-slate-800 dark:bg-slate-950 outline-none focus:ring-2 focus:ring-[#f9a61a]/20"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700/80 bg-slate-950/60 text-white text-xs font-semibold outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
               >
                 <option value="Bhopal Central (Ward 14-22)">Bhopal Central (Ward 14-22)</option>
                 <option value="MP Nagar & Commercial Zone">MP Nagar & Commercial Zone</option>
@@ -368,7 +434,7 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
             </div>
 
             <div>
-              <label className="block mb-1 text-[10px] font-black uppercase text-slate-500">
+              <label className="block mb-1 text-[10px] font-black uppercase text-slate-400">
                 {dict.peopleAffectedLabel || "People Affected (Approx.)"}
               </label>
               <input
@@ -377,14 +443,14 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
                 value={peopleAffected}
                 onChange={(e) => setPeopleAffected(e.target.value)}
                 placeholder={dict.peopleAffectedPlaceholder || "e.g. 150 citizens"}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold dark:border-slate-800 dark:bg-slate-950 outline-none focus:ring-2 focus:ring-[#f9a61a]/20"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700/80 bg-slate-950/60 text-white placeholder-slate-500 text-xs font-semibold outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="text-xs font-semibold text-slate-300">
                 {t("complaint.textLabel")}
               </label>
               {speechSupported && (
@@ -394,7 +460,7 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
                   className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all shadow-sm ${
                     listening
                       ? "bg-red-500 text-white animate-pulse shadow-red-500/30"
-                      : "bg-[#f9a61a] hover:bg-[#e09312] text-slate-900 font-extrabold shadow-orange-500/20 hover:scale-105 active:scale-95"
+                      : "bg-violet-600 hover:bg-violet-500 text-white font-extrabold shadow-violet-600/20 hover:scale-105 active:scale-95 cursor-pointer"
                   }`}
                   title="Click to speak"
                 >
@@ -408,16 +474,16 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder={dict.describeLabel || "Describe the issue in Bhopal (or click the mic to speak in Hindi/Hinglish)..."}
-                className="min-h-[140px] w-full resize-y rounded-xl border border-slate-200 bg-white p-3 pr-12 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-[#f9a61a]/20 dark:border-slate-800 dark:bg-slate-950 dark:focus:border-slate-600"
+                className="min-h-[140px] w-full resize-y rounded-xl border border-slate-700/80 bg-slate-950/60 p-3 pr-12 text-sm text-white placeholder-slate-500 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
               />
               {speechSupported && (
                 <button
                   type="button"
                   onClick={listening ? stopVoice : () => startVoice()}
-                  className={`absolute right-3 bottom-3 p-2.5 rounded-xl transition-all flex items-center justify-center ${
+                  className={`absolute right-3 bottom-3 p-2.5 rounded-xl transition-all flex items-center justify-center cursor-pointer ${
                     listening
                       ? "bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/40"
-                      : "bg-slate-100 hover:bg-[#f9a61a] text-slate-700 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-[#f9a61a] dark:hover:text-slate-900 shadow-sm"
+                      : "bg-slate-800 hover:bg-violet-600 text-slate-300 hover:text-white shadow-sm"
                   }`}
                   title={listening ? "Click to stop listening" : "Click to speak"}
                 >
@@ -440,29 +506,68 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
           </div>
 
           {/* Photo Evidence Upload Input */}
-          <div className="rounded-2xl border border-dashed border-slate-300 p-3.5 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-950/30">
+          <div className="rounded-2xl border border-dashed border-slate-700 p-3.5 bg-slate-950/40">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 flex items-center gap-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
                 <span>📷</span> {dict.photoEvidenceLabel || "Photo Evidence (Optional)"}
               </span>
               {photoFile && (
                 <button
                   type="button"
-                  onClick={() => { setPhotoFile(null); setPhotoPreview(null); }}
-                  className="text-[10px] text-red-500 font-bold hover:underline"
+                  onClick={() => {
+                    setPhotoFile(null);
+                    setPhotoPreview(null);
+                    setImageAnalysis(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                  className="text-[10px] text-red-400 font-bold hover:underline cursor-pointer"
                 >
                   {dict.removePhotoBtn || "Remove Photo"}
                 </button>
               )}
             </div>
             <input
+              ref={fileInputRef}
               type="file"
               accept="image/*"
+              disabled={analyzingImage || busy}
               onChange={handlePhotoChange}
-              className="text-xs text-slate-600 dark:text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#141b2d] file:text-white hover:file:bg-slate-800 cursor-pointer w-full"
+              className="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-800 file:text-white hover:file:bg-violet-600 cursor-pointer w-full"
             />
+
+            {analyzingImage && (
+              <div className="mt-2.5 flex items-center gap-2 text-xs font-bold text-violet-400 bg-violet-500/10 border border-violet-500/20 px-3 py-2 rounded-xl animate-pulse">
+                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-violet-400 border-t-transparent" />
+                <span>Validating Civic Media & AI Classification...</span>
+              </div>
+            )}
+
+            {photoFile && imageAnalysis && !analyzingImage && (
+              <div className="mt-2.5">
+                {imageAnalysis.needsReview || imageAnalysis.confidence < 0.60 ? (
+                  <div className="flex items-center justify-between p-2.5 bg-amber-500/15 border border-amber-500/30 rounded-xl text-amber-300 text-xs font-bold">
+                    <span className="flex items-center gap-1.5">
+                      <span>⚠️</span> Needs Manual Officer Review
+                    </span>
+                    <span className="bg-amber-500/20 text-amber-200 text-[10px] px-2 py-0.5 rounded-full font-black">
+                      AI {Math.round(imageAnalysis.confidence * 100)}%
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-xs font-bold">
+                    <span className="flex items-center gap-1.5">
+                      <span>✅</span> Verified: {imageAnalysis.category}
+                    </span>
+                    <span className="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full font-black">
+                      AI {Math.round(imageAnalysis.confidence * 100)}% Match
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
             {photoPreview && (
-              <div className="mt-2.5 relative w-24 h-24 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+              <div className="mt-2.5 relative w-24 h-24 rounded-xl overflow-hidden border border-slate-700 shadow-sm">
                 <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
               </div>
             )}
@@ -472,10 +577,10 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
             onClick={submitText} 
             disabled={!canSubmitText} 
             className={`w-full py-4 font-black uppercase tracking-widest transition-all ${
-              canSubmitText ? 'bg-[#141b2d] text-white shadow-lg shadow-slate-900/20 hover:-translate-y-1' : 'bg-slate-300 cursor-not-allowed opacity-50'
+              canSubmitText ? 'bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-600/25 hover:-translate-y-0.5 cursor-pointer' : 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
             }`}
           >
-            {busy ? (dict.processingBtn || "Processing...") : (dict.submitTextBtn || t("complaint.submitText"))}
+            {busy ? (dict.processingBtn || "Processing...") : analyzingImage ? "Validating Media..." : (dict.submitTextBtn || t("complaint.submitText"))}
           </Button>
         </div>
 
@@ -484,7 +589,7 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
             {dict.step2TitleVision || "Step 2: AI Vision Report"}
           </h4>
           
-          <div className="relative overflow-hidden rounded-[24px] bg-black aspect-video mb-2">
+          <div className="relative overflow-hidden rounded-2xl bg-black border border-slate-800 aspect-video mb-2">
             <video 
               ref={videoRef} 
               autoPlay 
@@ -501,7 +606,7 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
           <Button 
             onClick={toggleLiveVision} 
             variant="secondary"
-            className="w-full text-[10px] font-black uppercase"
+            className="w-full text-[10px] font-black uppercase cursor-pointer"
           >
             {isLive ? (dict.stopVisionBtn || "🛑 Stop Live Vision") : (dict.startVisionBtn || "🎥 Start Live AI Vision")}
           </Button>
@@ -515,17 +620,29 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
 
           <AnimatePresence>
             {analyzingImage && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase">
-                <span className="h-3 w-3 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
-                {dict.visionAnalyzing || "AI Vision Analyzing..."}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[10px] font-black text-violet-400 uppercase">
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-400 border-t-transparent" />
+                {dict.visionAnalyzing || "AI Vision Analyzing & Validating..."}
               </motion.div>
             )}
           </AnimatePresence>
 
           {imageAnalysis && (
-            <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-between">
-              <span className="text-[10px] font-black text-emerald-700 uppercase">AI Detected: {imageAnalysis.category}</span>
-              <span className="bg-emerald-700 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">
+            <div className={`p-3 rounded-xl flex items-center justify-between text-xs font-bold ${
+              imageAnalysis.needsReview || imageAnalysis.confidence < 0.60
+                ? "bg-amber-500/15 border border-amber-500/30 text-amber-300"
+                : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+            }`}>
+              <span className="text-[10px] font-black uppercase">
+                {imageAnalysis.needsReview || imageAnalysis.confidence < 0.60
+                  ? "⚠️ Needs Manual Officer Review"
+                  : `AI Detected: ${imageAnalysis.category}`}
+              </span>
+              <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${
+                imageAnalysis.needsReview || imageAnalysis.confidence < 0.60
+                  ? "bg-amber-500/30 text-amber-200"
+                  : "bg-emerald-600 text-white"
+              }`}>
                 {Math.round(imageAnalysis.confidence * 100)}% Match
               </span>
             </div>
@@ -535,7 +652,7 @@ export default function ComplaintForm({ onSubmitted, initialLocation }) {
             onClick={submitImage} 
             disabled={!canSubmitImage} 
             className={`w-full py-4 font-black uppercase tracking-widest transition-all ${
-              canSubmitImage ? 'bg-[#f9a61a] text-white shadow-lg shadow-orange-500/20 hover:-translate-y-1' : 'bg-slate-300 cursor-not-allowed opacity-50'
+              canSubmitImage ? 'bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-600/25 hover:-translate-y-0.5 cursor-pointer' : 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
             }`}
           >
             {busy ? (dict.uploadingBtn || "Uploading...") : (dict.submitImageBtn || t("complaint.submitImage"))}

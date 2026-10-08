@@ -37,29 +37,29 @@ export default function ComplaintList({ title, complaints, onDelete, deletingId 
 
       <div className="mt-4 space-y-4">
         {complaints.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-600 dark:border-slate-800 dark:text-slate-300">
+          <div className="rounded-xl border border-dashed border-slate-800 p-4 text-sm text-slate-400">
             {t("list.empty")}
           </div>
         ) : (
           complaints.map((c) => (
             <div
               key={c.id}
-              className="rounded-3xl border border-slate-200/80 bg-white/50 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/35"
+              className="rounded-3xl border border-slate-800 bg-slate-950/40 p-5 shadow-sm"
             >
               {/* --- NEW: CITIZEN PROFILE HEADER --- */}
               {(c.fullname || c.occupation || c.location) && (
-                <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
+                <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f9a61a] text-xs font-black text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-600 text-xs font-black text-white shadow-lg shadow-violet-600/20">
                       {c.fullname?.charAt(0).toUpperCase() || "U"}
                     </div>
                     <div>
-                      <div className="text-sm font-black text-slate-900 dark:text-white">
+                      <div className="text-sm font-black text-white">
                         {c.fullname || c.username}
                       </div>
-                      <div className="flex flex-wrap gap-2 text-[10px] font-bold uppercase tracking-tight text-slate-500">
+                      <div className="flex flex-wrap gap-2 text-[10px] font-bold uppercase tracking-tight text-slate-400">
                         <span>💼 {c.occupation || "Citizen"}</span>
-                        <span className="text-[#f9a61a]">• {c.employmentType || "Private"}</span>
+                        <span className="text-violet-400">• {c.employmentType || "Private"}</span>
                       </div>
                     </div>
                   </div>
@@ -78,17 +78,46 @@ export default function ComplaintList({ title, complaints, onDelete, deletingId 
                       {t("list.ticket")}: {c.ticketId}
                     </span>
                   ) : null}
-                  <div className="text-sm font-bold">
-                    {t(`categories.${c.category}`, { defaultValue: c.category })}
-                  </div>
+
+                  {(() => {
+                    const confNum =
+                      c.confidence !== undefined &&
+                      c.confidence !== null &&
+                      !Number.isNaN(Number(c.confidence))
+                        ? Number(c.confidence)
+                        : null;
+                    const isNeedsReview =
+                      c.category === "Needs Manual Officer Review" ||
+                      (confNum !== null && confNum > 0 && confNum < 0.60);
+
+                    if (isNeedsReview) {
+                      return (
+                        <span className="rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 text-[11px] font-black text-amber-400 flex items-center gap-1.5 shadow-sm">
+                          <span>⚠️</span> Needs Manual Officer Review
+                          {confNum ? ` • AI ${Math.round(confNum * 100)}%` : ""}
+                        </span>
+                      );
+                    }
+
+                    if (confNum !== null && confNum >= 0.60) {
+                      const catName = t(`categories.${c.category}`, { defaultValue: c.category });
+                      return (
+                        <span className="rounded-full bg-indigo-500/15 border border-indigo-500/30 px-2.5 py-1 text-[11px] font-black text-indigo-700 dark:text-indigo-300">
+                          {catName} • AI {Math.round(confNum * 100)}%
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <div className="text-sm font-bold">
+                        {t(`categories.${c.category}`, { defaultValue: c.category })}
+                      </div>
+                    );
+                  })()}
+
                   <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                     {t(`methods.${c.method || "text"}`, { defaultValue: c.method || "text" })}
                   </span>
-                  {confidenceLabel(c.confidence) ? (
-                    <span className="rounded-full bg-indigo-500/10 px-2 py-1 text-[11px] font-bold text-indigo-800 dark:text-indigo-200">
-                      {t("list.aiPrefix")} {confidenceLabel(c.confidence)}
-                    </span>
-                  ) : null}
                 </div>
                 
                 <div className="flex flex-wrap items-center gap-2">

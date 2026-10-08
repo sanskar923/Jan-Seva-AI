@@ -1,12 +1,106 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Shield, Search, ArrowRight, Mic, Camera, Building2, GraduationCap } from "lucide-react";
 import http from "../api/http.js";
 import { useAppTranslation } from "../utils/translations.js";
 
 export default function Landing() {
   const { dict } = useAppTranslation();
+  const navigate = useNavigate();
   const [telemetry, setTelemetry] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+
+  // Video looping fade engine refs
+  const videoRef = useRef(null);
+  const fadeRafRef = useRef(null);
+  const fadingOutRef = useRef(false);
+
+  const fade = (targetOpacity, duration, onComplete) => {
+    if (fadeRafRef.current) {
+      cancelAnimationFrame(fadeRafRef.current);
+      fadeRafRef.current = null;
+    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    const startOpacity = parseFloat(video.style.opacity) || 0;
+    const startTime = performance.now();
+
+    const step = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentOpacity = startOpacity + (targetOpacity - startOpacity) * progress;
+      if (video) {
+        video.style.opacity = currentOpacity.toString();
+      }
+      if (progress < 1) {
+        fadeRafRef.current = requestAnimationFrame(step);
+      } else {
+        fadeRafRef.current = null;
+        if (onComplete) onComplete();
+      }
+    };
+
+    fadeRafRef.current = requestAnimationFrame(step);
+  };
+
+  const handleLoadedData = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.play().catch(() => {});
+    fadingOutRef.current = false;
+    fade(1, 500);
+  };
+
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+    if (!video || !video.duration) return;
+    const remainingTime = video.duration - video.currentTime;
+    if (remainingTime <= 0.55 && !fadingOutRef.current) {
+      fadingOutRef.current = true;
+      fade(0, 500);
+    }
+  };
+
+  const handleEnded = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (fadeRafRef.current) {
+      cancelAnimationFrame(fadeRafRef.current);
+      fadeRafRef.current = null;
+    }
+    video.style.opacity = "0";
+    setTimeout(() => {
+      if (!video) return;
+      video.currentTime = 0;
+      video.play().catch(() => {});
+      fadingOutRef.current = false;
+      fade(1, 500);
+    }, 100);
+  };
+
+  const handleTicketSearch = (e) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      navigate(`/dashboard?q=${encodeURIComponent(searchInput.trim())}`);
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  useEffect(() => {
+    document.body.classList.add("landing-hero-active");
+    if (videoRef.current && videoRef.current.readyState >= 2) {
+      handleLoadedData();
+    }
+    return () => {
+      document.body.classList.remove("landing-hero-active");
+      if (fadeRafRef.current) {
+        cancelAnimationFrame(fadeRafRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     async function fetchTelemetry() {
@@ -36,85 +130,171 @@ export default function Landing() {
     : "1.2M+";
 
   return (
-    <div className="relative min-h-screen bg-[#fdfaf3] dark:bg-slate-950 text-[#141b2d] dark:text-slate-100 flex flex-col items-center justify-start overflow-hidden font-sans transition-colors duration-300">
+    <div className="relative min-h-screen bg-black text-slate-100 flex flex-col items-center justify-start overflow-hidden font-sans">
       
-      {/* Background ambient gradient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[700px] bg-gradient-to-b from-[#f9a61a]/15 via-[#f9a61a]/5 to-transparent pointer-events-none" />
-
       {/* ============================================================ */}
-      {/* 1. HERO SECTION (Preserving Screenshot Visuals & Style)      */}
+      {/* 1. CINEMATIC HERO SECTION                                    */}
       {/* ============================================================ */}
-      <section className="relative z-10 max-w-5xl mx-auto text-center pt-16 md:pt-24 pb-20 px-4 w-full">
-        
-        {/* Top Badge */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 bg-[#f9a61a]/10 border border-[#f9a61a]/25 rounded-full text-[#f9a61a] text-xs sm:text-sm font-bold tracking-wide shadow-sm"
-        >
-          <span className="inline-block h-2 w-2 rounded-full bg-[#f9a61a] animate-pulse" />
-          {dict.heroBadge}
-        </motion.div>
+      <section className="relative min-h-screen bg-black overflow-hidden flex flex-col justify-between w-full">
+        {/* Full-Screen Looping Background Video */}
+        <video
+          ref={videoRef}
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4"
+          autoPlay
+          muted
+          playsInline
+          onLoadedData={handleLoadedData}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={handleEnded}
+          className="absolute inset-0 w-full h-full object-cover translate-y-[17%] pointer-events-none"
+          style={{ opacity: 0 }}
+        />
 
-        {/* The Bold Headline */}
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-[52px] sm:text-[76px] md:text-[96px] lg:text-[112px] leading-[0.92] font-black tracking-tighter mb-8 text-[#141b2d] dark:text-white"
-        >
-          {dict.heroHeadline1} <br />
-          <span className="text-[#f9a61a]">{dict.heroHeadline2}</span>
-        </motion.h1>
+        {/* Ambient Dark Gradient Overlays for Cinematic Legibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/35 to-black/95 pointer-events-none" />
 
-        {/* Sub-headline */}
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-3xl mx-auto text-lg sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed mb-12 px-2"
-        >
-          {dict.heroSubhead}
-        </motion.p>
+        {/* Navbar (relative z-20, py-6) */}
+        <header className="relative z-20 py-6 px-4 w-full">
+          <div className="liquid-glass rounded-full px-6 py-3 flex items-center justify-between max-w-5xl mx-auto w-full text-white shadow-2xl">
+            {/* Left: Brand logo with Shield/Globe icon + "Jan Seva AI", nav links */}
+            <div className="flex items-center gap-8">
+              <Link to="/" className="flex items-center gap-2.5 group">
+                <div className="h-8 w-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                  <Shield className="w-4 h-4 text-white" />
+                </div>
+                <span className="font-extrabold text-sm tracking-wide text-white">
+                  Jan Seva AI
+                </span>
+              </Link>
 
-        {/* Bold Action Buttons */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6"
-        >
-          <Link to="/login" className="w-full sm:w-auto">
-            <button className="group relative w-full sm:w-auto flex items-center justify-center gap-3 px-10 sm:px-12 py-5 bg-[#f9a61a] text-white text-lg sm:text-xl font-black rounded-[22px] shadow-[0_20px_40px_-10px_rgba(249,166,26,0.5)] hover:shadow-[0_25px_50px_-10px_rgba(249,166,26,0.65)] hover:bg-[#ea9915] transition-all hover:-translate-y-1.5 active:translate-y-0 cursor-pointer">
-              {dict.heroStartDiscovery}
-              <span className="text-2xl sm:text-3xl transition-transform group-hover:translate-x-2">→</span>
+              <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+                <Link to="/dashboard" className="hover:text-white transition-colors">
+                  Report Issue
+                </Link>
+                <Link to="/admin" className="hover:text-white transition-colors">
+                  City Operations
+                </Link>
+                <Link to="/university" className="hover:text-white transition-colors flex items-center gap-1.5">
+                  <span>🎓</span> College Research Hub
+                </Link>
+              </nav>
+            </div>
+
+            {/* Right: "Track Ticket" text button + "Official Portal" liquid-glass button */}
+            <div className="flex items-center gap-4 text-xs font-semibold">
+              <Link
+                to="/dashboard"
+                className="hidden sm:inline-block text-slate-300 hover:text-white transition-colors"
+              >
+                Track Ticket
+              </Link>
+              <Link
+                to="/login"
+                className="liquid-glass rounded-full px-5 py-2 text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                Official Portal
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Hero Content (relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12 text-center -translate-y-[16%]) */}
+        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12 text-center -translate-y-[16%] max-w-5xl mx-auto w-full">
+          {/* Main heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-5xl md:text-7xl lg:text-8xl text-white tracking-tight leading-[1.05] mb-8"
+            style={{ fontFamily: "'Instrument Serif', serif" }}
+          >
+            Built for the city you love.
+          </motion.h1>
+
+          {/* Interactive Input Bar */}
+          <motion.form
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.15 }}
+            onSubmit={handleTicketSearch}
+            className="liquid-glass rounded-full pl-6 pr-2 py-2 flex items-center gap-3 max-w-xl w-full mb-8 shadow-2xl"
+          >
+            <Search className="w-4 h-4 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Report an issue or enter Ticket ID..."
+              className="bg-transparent border-none outline-none text-white text-sm placeholder:text-slate-400 flex-1 w-full"
+            />
+            <button
+              type="submit"
+              className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-slate-200 transition-colors cursor-pointer shrink-0"
+              title="Submit / Search"
+            >
+              <ArrowRight className="w-4 h-4 text-black" />
             </button>
+          </motion.form>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-sm md:text-base lg:text-lg text-slate-300 max-w-2xl leading-relaxed mb-8 font-light"
+          >
+            Autonomous civic action engine. Rapid 24h fixes for municipal field teams, and verified root-cause research bridges for engineering colleges.
+          </motion.p>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.45 }}
+          >
+            <Link
+              to="/dashboard"
+              className="liquid-glass rounded-full px-8 py-3 text-white text-sm font-medium hover:bg-white/10 transition-colors inline-flex items-center gap-2 cursor-pointer shadow-lg"
+            >
+              <Mic className="w-4 h-4 text-emerald-400" />
+              <span>Report Issue (Voice or Live Photo)</span>
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Footer (relative z-10 flex justify-center gap-4 pb-12) */}
+        <footer className="relative z-10 flex justify-center items-center gap-4 pb-12">
+          {/* Circular button 1: Voice / Photo Intake */}
+          <Link
+            to="/dashboard"
+            className="liquid-glass rounded-full h-12 w-12 flex items-center justify-center text-white hover:bg-white/10 hover:scale-110 transition-all cursor-pointer group shadow-lg"
+            title="Report by Voice or Photo"
+          >
+            <Camera className="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" />
           </Link>
 
-          <Link to="/signup" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-10 sm:px-12 py-5 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 text-[#f9a61a] text-lg sm:text-xl font-black rounded-[22px] shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all hover:-translate-y-1 cursor-pointer">
-              {dict.heroCreateAccount}
-            </button>
-          </Link>
-        </motion.div>
+          {/* Circular button 2: Municipal Track A Quick Repairs */}
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById("how-it-works");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="liquid-glass rounded-full h-12 w-12 flex items-center justify-center text-white hover:bg-white/10 hover:scale-110 transition-all cursor-pointer group shadow-lg"
+            title="Quick City Repairs (24h - 48h SLA)"
+          >
+            <Building2 className="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" />
+          </button>
 
-        {/* Feature Tags */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="mt-16 sm:mt-20 flex flex-wrap justify-center gap-6 sm:gap-8 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.2em] text-xs"
-        >
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#f9a61a]" /> {dict.heroTagVision}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-indigo-500" /> {dict.heroTagMulti}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" /> {dict.heroTagAuto}
-          </span>
-        </motion.div>
+          {/* Circular button 3: College Research Track B */}
+          <Link
+            to="/university"
+            className="liquid-glass rounded-full h-12 w-12 flex items-center justify-center text-white hover:bg-white/10 hover:scale-110 transition-all cursor-pointer group shadow-lg"
+            title="College Research Hub"
+          >
+            <GraduationCap className="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" />
+          </Link>
+        </footer>
       </section>
 
       {/* ============================================================ */}
@@ -394,15 +574,15 @@ export default function Landing() {
                 <div className="space-y-2 text-xs font-semibold text-slate-700 dark:text-slate-300 mb-4">
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-indigo-600" />
-                    <span>Pothole resurfacing & road trench restorations</span>
+                    <span>Pothole patching</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-indigo-600" />
-                    <span>Transformer spark isolation & live wire safety</span>
+                    <span>Broken water pipes</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-indigo-600" />
-                    <span>Water pipeline bursts & valve replacements</span>
+                    <span>Streetlight & wire safety</span>
                   </div>
                 </div>
               </div>
@@ -431,15 +611,15 @@ export default function Landing() {
                 <div className="space-y-2 text-xs font-semibold text-slate-700 dark:text-slate-300 mb-4">
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#f9a61a]" />
-                    <span>Low-cost IoT acoustic sensors for early water leak detection</span>
+                    <span>Flooding prevention designs</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#f9a61a]" />
-                    <span>AI drainage telemetry models for urban flood prevention</span>
+                    <span>Low-cost water leak sensors</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#f9a61a]" />
-                    <span>Eco-friendly polymer road patch mixes funded by Tata Trusts CSR</span>
+                    <span>Durable road material testing</span>
                   </div>
                 </div>
               </div>
@@ -555,7 +735,7 @@ export default function Landing() {
               </div>
               <ul className="space-y-2 text-xs text-slate-400 font-medium">
                 <li className="flex items-center gap-1.5">
-                  <span className="text-emerald-400">●</span> 100m Proximity Deduplication
+                  <span className="text-emerald-400">●</span> Automatic Duplicate Merging
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="text-indigo-400">●</span> Problem DNA & Root Cause

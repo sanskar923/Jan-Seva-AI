@@ -16,36 +16,20 @@ function Shell() {
   const { isAuthed } = useAuth();
   const { pathname } = useLocation();
 
-  // --- THEME LOGIC START ---
-  // Initialize theme from local storage or default to 'dark'
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
-
   useEffect(() => {
     const root = window.document.documentElement;
-    // Remove both classes to reset
-    root.classList.remove("light", "dark");
-    // Add the current theme class to the <html> tag
-    root.classList.add(theme);
-    // Save preference for next visit
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  // Function to switch themes
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-  // --- THEME LOGIC END ---
+    root.classList.remove("light");
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+    localStorage.setItem("janSevaTheme", "dark");
+  }, []);
 
   const hideNav = pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
 
   return (
-    /* The main wrapper now uses the theme state. 
-       'dark' mode triggers the Emerald/Midnight theme. 
-    */
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500 selection:text-white transition-colors duration-300">
-      
+    <div className="min-h-screen bg-[#0B0F17] text-slate-100 selection:bg-violet-500 selection:text-white transition-colors duration-300">
       {!hideNav ? (
-        <Navbar theme={theme} toggleTheme={toggleTheme} />
+        <Navbar />
       ) : null}
 
       <main className="relative">

@@ -2,12 +2,12 @@ import React from "react";
 
 export default function Card({ children, className = "", glass = false }) {
   const glassCls = glass
-    ? "border-white/25 bg-white/55 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45"
-    : "bg-white dark:bg-slate-900 shadow-soft";
+    ? "border-slate-800 bg-slate-900/60 shadow-2xl backdrop-blur-md"
+    : "border-slate-800 bg-slate-900/70 shadow-xl backdrop-blur-sm";
 
   return (
     <div
-      className={`rounded-2xl border border-slate-200 p-5 dark:border-slate-800 ${glassCls} ${className}`}
+      className={`rounded-2xl border text-slate-100 p-5 ${glassCls} ${className}`}
     >
       {children}
     </div>

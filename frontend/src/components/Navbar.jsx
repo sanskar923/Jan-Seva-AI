@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../state/AuthContext.jsx";
 import { useAppTranslation } from "../utils/translations.js";
-import ThemeToggle from "./ThemeToggle.jsx";
 import LanguageSwitcher from "./LanguageSwitcher.jsx";
 import Button from "../ui/Button.jsx";
 
@@ -14,8 +13,8 @@ function NavItem({ to, children }) {
       className={({ isActive }) =>
         `rounded-xl px-3 py-2 text-sm font-semibold transition ${
           isActive
-            ? "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100"
-            : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            ? "bg-violet-600/20 text-violet-300 border border-violet-500/30"
+            : "text-slate-400 hover:bg-slate-800/60 hover:text-white border border-transparent"
         }`
       }
     >
@@ -50,15 +49,15 @@ export default function Navbar() {
   }
 
   return (
-    <div className="sticky top-0 z-40 border-b border-slate-200 bg-white/75 backdrop-blur dark:border-slate-800 dark:bg-slate-950/65">
+    <div className="sticky top-0 z-40 border-b border-slate-800 bg-[#0B0F17]/85 backdrop-blur-md text-slate-100">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-600/20">
             JS
           </div>
           <div>
-            <div className="text-sm font-extrabold leading-4">{t("nav.brand")}</div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400">{t("nav.portalSubtitle")}</div>
+            <div className="text-sm font-extrabold leading-4 text-white">{t("nav.brand")}</div>
+            <div className="text-[11px] text-slate-400">{t("nav.portalSubtitle")}</div>
           </div>
         </Link>
 
@@ -71,21 +70,21 @@ export default function Navbar() {
           <a
             href="#how-it-works"
             onClick={(e) => handleAnchorClick(e, "how-it-works")}
-            className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition cursor-pointer"
+            className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-white transition cursor-pointer"
           >
             {dict.navHowItWorks}
           </a>
           <a
             href="#impact"
             onClick={(e) => handleAnchorClick(e, "impact")}
-            className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition cursor-pointer"
+            className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-white transition cursor-pointer"
           >
             {dict.navImpact}
           </a>
           <a
             href="#about"
             onClick={(e) => handleAnchorClick(e, "about")}
-            className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition cursor-pointer"
+            className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-white transition cursor-pointer"
           >
             {dict.navAbout}
           </a>
@@ -93,7 +92,6 @@ export default function Navbar() {
 
         <div className="flex flex-wrap items-center justify-end gap-2">
           <LanguageSwitcher />
-          <ThemeToggle />
           {!isAuthed ? (
             <>
               <Link to="/login">
@@ -129,7 +127,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Sub-Navigation Links */}
-      <div className="flex md:hidden items-center justify-around border-t border-slate-100 bg-white/50 px-3 py-1.5 text-xs font-bold text-slate-600 dark:border-slate-800/60 dark:bg-slate-950/40 dark:text-slate-300">
+      <div className="flex md:hidden items-center justify-around border-t border-slate-800 bg-[#0B0F17]/90 px-3 py-1.5 text-xs font-bold text-slate-400">
         {canAccessUniversity && (
           <>
             <Link
